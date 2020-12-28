@@ -888,9 +888,9 @@
                 <hamburgerMenu:HamburgerMenuItem x:Name="MonthReportWindow" IsEnabled="False" Text="Месяц служения" MouseDoubleClick="HamburgerMenuItemMonthReportPage" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/MonthCalendarItem.png"/>
                 <hamburgerMenu:HamburgerMenuItem x:Name="S21Window" IsEnabled="False" Text="Заполнить S-21" MouseDoubleClick="HamburgerMenuItemS21Page" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/PdfFileItem.png"/>
                 <hamburgerMenu:HamburgerMenuItem x:Name="PublishersWindow" IsEnabled="False" Text="Возвещатели" MouseDoubleClick="HamburgerMenuItemPublisherInfoPage" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/PortretItem.png" />
+                <hamburgerMenu:HamburgerMenuItem x:Name="SettingsWindow" Text="Настройки" MouseDoubleClick="SettingsWindow_MouseDoubleClick" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/SettingsItem.png"/>
                 <hamburgerMenu:HamburgerMenuItem x:Name="ArchiveMinistryWindow" IsEnabled="False" Text="Архив служения" MouseDoubleClick="HamburgerMenuItemArchivePage" TextBlock.FontFamily="Consolas"  Icon="Resources/HamburgerMenu/ArchiveItem.png"/>
                 <hamburgerMenu:HamburgerMenuItem x:Name="NoActivityWindow" IsEnabled="False" Text="Неактивные" MouseDoubleClick="HamburgerMenuItemNoActivityPage" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/BadSmileItem.png"/>
-                <hamburgerMenu:HamburgerMenuItem x:Name="SettingsWindow" Text="Настройки" MouseDoubleClick="SettingsWindow_MouseDoubleClick" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/SettingsItem.png"/>
             </hamburgerMenu:HamburgerMenu>
         </Grid>
 

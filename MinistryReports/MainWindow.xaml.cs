@@ -70,8 +70,12 @@ namespace MinistryReports
                     MonthReportWindow.IsEnabled = true;
                     S21Window.IsEnabled = true;
                     PublishersWindow.IsEnabled = true;
-                    ArchiveMinistryWindow.IsEnabled = true;
-                    NoActivityWindow.IsEnabled = true;
+                    // Пока не реализовано нормально.
+                    ArchiveMinistryWindow.IsEnabled = false;
+                    ArchiveMinistryWindow.Visibility = Visibility.Hidden;
+
+                    NoActivityWindow.IsEnabled = false;
+                    NoActivityWindow.Visibility = Visibility.Hidden;
                 }
                 waitWindow.Close();
             }
@@ -231,7 +235,7 @@ namespace MinistryReports
                 JwBookExcel.DataPublisher dataPublisher = new JwBookExcel.DataPublisher(excel);
 
                 int startYear = dataPublisher.StartMinistryYear;
-                int currentYear = DateTime.Now.Year;
+                int currentYear = DateTime.Now.Year + 1;
 
                 string[] years = new string[(currentYear - startYear) + 1]; // Всего массив хранить столько значений.
                 for (int i = 0; i < years.Length; i++)
@@ -749,7 +753,7 @@ namespace MinistryReports
                     JwBookExcel.DataPublisher dataPublisher = new JwBookExcel.DataPublisher(excel);
 
                     int startYear = dataPublisher.StartMinistryYear;
-                    int currentYear = DateTime.Now.Year;
+                    int currentYear = DateTime.Now.Year + 1;
 
                     string[] years = new string[(currentYear - startYear) + 1]; // Всего массив хранить столько значений.
                     for (int i = 0; i < years.Length; i++)
@@ -906,7 +910,7 @@ namespace MinistryReports
                 FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(NoActivity);
                 FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
 
-                FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(Archive);
+                // FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(Archive);
 
                 MenuNameLabel.Content = "Архив";
             }
@@ -1043,7 +1047,7 @@ namespace MinistryReports
                 FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(MonthReport);
                 FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
 
-                FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(NoActivity);
+                // FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(NoActivity);
 
                 MenuNameLabel.Content = "Неактивные возвещатели";
 

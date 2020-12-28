@@ -43,8 +43,8 @@ namespace MinistryReports.S_21
                     if (publisher.BuptismDate == "HB") s21PublisherData.HopeOther = "Off";
                     if (publisher.Gender == "М") s21PublisherData.MenGender = "Yes";
                     if (publisher.Gender == "Ж") s21PublisherData.WomenGender = "Yes";
-                    if (publisher.Group == "СТАР") s21PublisherData.AppointmentPastor = "Yes";
-                    if (publisher.Group == "СЛУЖ") s21PublisherData.AppointmentMinistryHelp = "Yes";
+                    if (publisher.Appointment == "СТАР") { s21PublisherData.AppointmentPastor = "Yes";}
+                    if (publisher.Appointment == "СЛУЖ") s21PublisherData.AppointmentMinistryHelp = "Yes";
                     if (publisher.Pioner == "П") s21PublisherData.Pioner = "Yes";
                 }
                 s21PublisherData.Name = publisher.Name;
