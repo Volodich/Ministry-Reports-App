@@ -1,0 +1,903 @@
+﻿<Window x:Class="MinistryReports.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:hamburgerMenu="clr-namespace:HamburgerMenu;assembly=HamburgerMenu"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MinistryReports"
+        mc:Ignorable="d"
+        Title= "Ministry Reports" Icon="Resources\Icon.ico" Loaded="MainWindowLoaded" Height="450" Width="800" FontFamily="Consolas" FontSize="16" MinWidth="800" MinHeight="450" Foreground="White" BorderBrush="White" Background="#FFE5E5E5">
+
+    <Grid Name="Main"  VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="85*"/>
+            <ColumnDefinition Width="287*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="LabelGrid" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Background="#FFF8F7F2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="19*"/>
+                <ColumnDefinition Width="725*"/>
+            </Grid.ColumnDefinitions>
+            <Label  Name="MenuNameLabel" Grid.Column="1" Content="Главная" TextBlock.FontSize="20" TextBlock.FontFamily="Sans" VerticalAlignment="Center" FontSize="18" Height="32" Margin="0,4" HorizontalAlignment="Left" RenderTransformOrigin="0.516,0.675" Padding="4,6,4,4"/>
+        </Grid>
+        <Grid  x:Name="HomeWindow" IsEnabled="True" Visibility="Visible"  Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Background="#FFE5E5E5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="25"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="39*"/>
+                <RowDefinition Height="341*"/>
+            </Grid.RowDefinitions>
+            <Label Content="Уведомления" Grid.Column="1" Grid.Row="0" TextBlock.FontFamily="Sans"  TextBlock.FontSize="20" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,3.52"/>
+            <ScrollViewer Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
+                <StackPanel x:Name="NotificationStackPanel" Grid.Column="1" Grid.Row="1">
+                </StackPanel>
+            </ScrollViewer>
+
+        </Grid>
+        <Grid  x:Name="MonthReport" IsEnabled="False" Visibility="Collapsed" HorizontalAlignment="Stretch" Grid.Column=" 1" Grid.ColumnSpan="2" Grid.Row="1" Background="#FFE5E5E5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Укажите нужный месяц и год" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" TextBlock.FontFamily="PT Sans" TextBlock.FontWeight="DemiBold" Margin="0,6.4" Height="27.2" Width="230.843"/>
+            <Grid Grid.Column="1"  Grid.Row="1" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="195*"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="195*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="107*"/>
+                    <ColumnDefinition Width="45*"/>
+                    <ColumnDefinition Width="65*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="ComboBoxMonth" Grid.Column="0" Width="Auto" IsEditable="True" TextBlock.FontFamily="PT Sans"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Месяц" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="16,6,0,6"/>
+                <ComboBox x:Name="ComboBoxYears"  Grid.Column="2"  IsEditable="True" TextBlock.FontFamily="PT Sans"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="16,6,0,6" />
+                <Button x:Name="GetMonthReportButton"  Height="Auto" Click="GetMonthReportButtonClick" IsEnabled="False" Content="Посчитать" TextBlock.FontFamily="PT Sans"  Grid.Column="4" Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+                <Button x:Name="SaveMonthReportButton" Height="Auto" Click="SaveMonthReportButtonClick" IsEnabled="False" Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF5C3C86" BorderBrush="#FF5C3C86">
+                    <Image Source="Resources/SaveIcon.png"/>
+                </Button>
+            </Grid>
+            <GridSplitter  Grid.Row="2" ShowsPreview="False"  Grid.Column="1"  Height="3" ResizeBehavior="BasedOnAlignment" ResizeDirection="Rows"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center"  Background="#FFF9F9F9"/>
+            <Grid Name="GridColumnHeader" Grid.Column="1" Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="168.25*"/>
+                    <ColumnDefinition Width="84.125*"/>
+                    <ColumnDefinition Width="84.125*"/>
+                    <ColumnDefinition Width="84.125*"/>
+                    <ColumnDefinition Width="84.125*"/>
+                    <ColumnDefinition Width="84.125*"/>
+                    <ColumnDefinition Width="84.125*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Тип возвещателя"  TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.FontFamily="PT Sans" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Height="26" Margin="0,2" Width="125.997" Padding="0,4,4,4" />
+                <Label Content="Сдало" TextBlock.TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.FontFamily="PT Sans" Grid.Column="1" Height="26" Margin="0,2" Width="49.817" Padding="0,4,4,4" />
+                <Label Content="Публ."  TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.FontFamily="PT Sans" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Height="26" Margin="0,2" Width="45.794" Padding="0,4,4,4" />
+                <Label Content="Видео"  TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.FontFamily="PT Sans" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="3" Height="26" Margin="0,2" Width="50.154" Padding="0,4,4,4" />
+                <Label Content="Часы"  TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.FontFamily="PT Sans" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="4" Height="26" Margin="0,2" Width="43.123" Padding="0,4,4,4" />
+                <Label Content="Повт. п."  TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.FontFamily="PT Sans" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="5" Height="26" Margin="0,2" Width="60.857" Padding="0,4,4,4" />
+                <Label Content="Изучения"  TextBlock.FontSize="14" TextBlock.FontWeight="Bold" TextBlock.FontFamily="PT Sans" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="6" Height="26" Margin="0,2" Width="74.413" Padding="0,4,4,4" />
+            </Grid>
+            <DataGrid x:Name="MonthReportMeetDataGrid" CanUserAddRows="False" CanUserDeleteRows="False"  VerticalScrollBarVisibility="Disabled" HeadersVisibility="None" CanUserReorderColumns="False" HorizontalGridLinesBrush="#FFE5E5E5"  Background="White" Grid.Column="1" Grid.Row="4" RowEditEnding="MonthReportMeetDataGrid_RowEditEnding" AutoGenerateColumns="False" >
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="0 5 5 5"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Тип возвещателя" TextBlock.FontSize="14" TextBlock.FontFamily="PT Sans" TextBlock.TextAlignment="Left" CanUserSort="False" CanUserResize="False" IsReadOnly="True" Binding="{Binding Type}" Width="2*">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="ToolBar.Background" Value="#FFE5E5E5"/>
+                                <Setter Property="TextBlock.FontSize" Value="15"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                <Setter Property="TextBlock.FontFamily" Value="PT Sans"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Сдало"  TextBlock.FontSize="14" TextBlock.FontFamily="PT Sans" TextBlock.TextAlignment="Left" CanUserSort="False" CanUserResize="False" IsReadOnly="False" Binding="{Binding Path=CountReports, UpdateSourceTrigger=PropertyChanged}" Width="*" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="ToolBar.Background" Value="#FFE5E5E5"/>
+                                <Setter Property="TextBlock.FontSize" Value="15"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                <Setter Property="TextBlock.FontFamily" Value="PT Sans"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Публ." TextBlock.TextAlignment="Left" TextBlock.FontFamily="PT Sans" CanUserSort="False" TextBlock.FontSize="14"  CanUserResize="False" IsReadOnly="False" Binding="{Binding Path=Publications, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="ToolBar.Background" Value="#FFE5E5E5"/>
+                                <Setter Property="TextBlock.FontSize" Value="15"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                <Setter Property="TextBlock.FontFamily" Value="PT Sans"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Видео" TextBlock.TextAlignment="Left" TextBlock.FontFamily="PT Sans" CanUserSort="False" TextBlock.FontSize="14"  CanUserResize="False"  IsReadOnly="False" Binding="{Binding Path=Videos, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="ToolBar.Background" Value="#FFE5E5E5"/>
+                                <Setter Property="TextBlock.FontSize" Value="15"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                <Setter Property="TextBlock.FontFamily" Value="PT Sans"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Часы" TextBlock.TextAlignment="Left" TextBlock.FontFamily="PT Sans" CanUserSort="False" TextBlock.FontSize="14"  IsReadOnly="False" Binding="{Binding Path=Hours, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="ToolBar.Background" Value="#FFE5E5E5"/>
+                                <Setter Property="TextBlock.FontSize" Value="15"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                <Setter Property="TextBlock.FontFamily" Value="PT Sans"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Повт. п." TextBlock.TextAlignment="Left"  TextBlock.FontFamily="PT Sans" CanUserResize="False" TextBlock.FontSize="14"  CanUserSort="False" IsReadOnly="False" Binding="{Binding Path=ReturnVisits, UpdateSourceTrigger=PropertyChanged}">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="ToolBar.Background" Value="#FFE5E5E5"/>
+                                <Setter Property="TextBlock.FontSize" Value="15"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                <Setter Property="TextBlock.FontFamily" Value="PT Sans"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Изучения" TextBlock.TextAlignment="Left" TextBlock.FontFamily="PT Sans" CanUserSort="False" TextBlock.FontSize="14" CanUserResize="False"  IsReadOnly="False" Binding="{Binding Path=BibleStudy, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="ToolBar.Background" Value="#FFE5E5E5"/>
+                                <Setter Property="TextBlock.FontSize" Value="15"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                <Setter Property="TextBlock.FontFamily" Value="PT Sans"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Grid x:Name="S21" IsEnabled="False" Visibility="Hidden" HorizontalAlignment="Stretch" Grid.Column=" 1" Grid.ColumnSpan="2" Grid.Row="1" Background="#FFE5E5E5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="373*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="110*"/>
+                <ColumnDefinition Width="64*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Label Content="Выберите место хранения" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" Margin="0,7.6" Height="24.8" Width="176.477"/>
+            <TextBox x:Name="TextBoxPuthToFolderUnlaoding" Grid.Column="1" Grid.Row="1" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="false">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                                            Background="{TemplateBinding Background}" Padding="4 8 4 8" SnapsToDevicePixels="True">
+                                                <TextBlock Text="{TemplateBinding Text}"  TextTrimming="CharacterEllipsis"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+            <Button x:Name="bthSearchFolder" Content="Выбрать" Grid.Column="3" Grid.Row="1" Click="bthSearchFolder_Click" Height="Auto" Background="#FF5C3C86" BorderBrush="#FF5C3C86" FontFamily="PT Sans" FontSize="13"/>
+            <Grid Grid.Column="1" Grid.Row="3" Grid.RowSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="13.5*"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="13.5*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Label Content="Текущий год"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+                <Label Content="Предыдущий год"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2"/>
+                <ComboBox x:Name="ComboBoxYearNow"  Grid.Column="0" Grid.Row="1" 
+                          IsEditable="True" TextBlock.FontFamily="PT Sans"  TextBlock.FontSize="12" TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="4,6,0,6"/>
+                <ComboBox x:Name="ComboBoxYearOld" Grid.Column="2" Grid.Row="1" 
+                           IsEditable="True" TextBlock.FontFamily="PT Sans"  TextBlock.FontSize="12" TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="4,6,0,6"/>
+            </Grid>
+            <Button x:Name="ButtonShowPublisher" Click="ButtonShowPublisher_Click" Content="Показать" Grid.Column="3" Grid.Row="4"
+                    TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Background="#FF5C3C86" BorderBrush="#FF5C3C86" Height="Auto"/>
+            <Button x:Name="ConvertToPDFButton" Click="ConvertToPDFButton_Click" IsEnabled="False" Grid.Column="5" Grid.Row="4"
+                    Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF5C3C86" BorderBrush="#FF5C3C86">
+                <Image Source="Resources/SaveIcon.png"/>
+            </Button>
+            <Label Content="ФИО возвещателя" Grid.Column="1" Grid.Row="6"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="15" TextBlock.FontWeight="DemiBold"/>
+            <DataGrid x:Name="DataGridDataPublisher" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" HeadersVisibility="None" VerticalScrollBarVisibility="Auto" HorizontalGridLinesBrush="#FFE5E5E5"
+                      CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" AutoGenerateColumns="False" 
+                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="0 5 5 5"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header=" " TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" TextBlock.TextAlignment="Left" 
+                                        Binding="{Binding Path=CountId}" Width="40"/>
+                    <DataGridTextColumn Header="ФИО возвещателей" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" TextBlock.TextAlignment="Left" 
+                                        Binding="{Binding Path=Name}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>
+        <Grid x:Name="PublisherInfo" IsEnabled="False" Visibility="Collapsed" HorizontalAlignment="Stretch" Grid.Column=" 1" Grid.ColumnSpan="2" Grid.Row="1" Background="#FFE5E5E5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="182*"/>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="182*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="80*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="80*"/>
+                <ColumnDefinition Width="16*"/>
+                <ColumnDefinition Width="57*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Имя возвещателя" Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14"/>
+            <Label Content="Фамилия возвещателя" Grid.Column="3" Grid.Row="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14"/>
+            <TextBox x:Name="TextBoxPublisherNamePublisherInfo" Grid.Column="1" Grid.Row="1" Background="White" Text="Введите имя" Foreground="#FF8B8B8B" MouseDoubleClick="TextBoxMouseDoubleClickHandler"
+                     TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="TextBoxPublisherSurnamePublisherInfo" Grid.Column="3" Grid.Row="1" Background="White" Text="Введите фамилию" Foreground="#FF8B8B8B"  MouseDoubleClick="TextBoxMouseDoubleClickHandler"
+                     TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+            <Button x:Name="SearchPublisherInfoButton" IsEnabled="False" Click="SearchPublisherInfo_ClickHandler" Content="Поиск" Grid.Column="5" Grid.Row="1"
+                    TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" Background="#FF5C3C86" BorderBrush="#FF5C3C86" Height="Auto" Width="Auto"/>
+            <Label Content="Служебный год" Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14"/>
+            <ComboBox x:Name="ComboBoxYearsPublisherInfo" Grid.Column="1" Grid.Row="4" 
+                      IsEditable="True" TextBlock.FontFamily="PT Sans"  TextBlock.FontSize="12" TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="4,6,0,6"/>
+            <Button x:Name="PublisherInfoAddPublisherButton"  Click="PublisherInfoAddPublisherButton_Click" IsEnabled="False" Content="Добавить" Grid.Column="7" Grid.Row="4"
+                    TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" Padding="2 2" Height="Auto" Width="Auto" Background="#FF5C3C86" BorderBrush="#FF5C3C86"/>
+            <Button x:Name="PublisherInfoSaveMinistryInformationButton"  Click="PublisherInfoSaveMinistryInformationButton_ClickHandler" IsEnabled="False" Grid.Column="9" Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF5C3C86" BorderBrush="#FF5C3C86">
+                <Image Source="Resources/SaveIcon.png"/>
+            </Button>
+            <Grid Grid.Column="1" Grid.ColumnSpan="9" Grid.Row="6" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Месяц" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Padding="0,4,4,4" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold"/>
+                <Label Content="Публ." Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Padding="0,4,4,4" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold"/>
+                <Label Content="Видео" Grid.Column="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Padding="0,4,4,4" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold"/>
+                <Label Content="Часы" Grid.Column="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Padding="0,4,4,4" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold"/>
+                <Label Content="Повт. п." Grid.Column="4" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Padding="0,4,4,4" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold"/>
+                <Label Content="Изуч." Grid.Column="5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Padding="0,4,4,4" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold"/>
+                <Label Content="Примечания" Grid.Column="6" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Padding="0,4,4,4" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold"/>
+            </Grid>
+            <DataGrid x:Name="DataGridDataMinistryPubliher" CellEditEnding="DataGridDataMinistryPubliher_CellEditEnding" Grid.Column="1" Grid.ColumnSpan="9" Grid.Row="7" ColumnWidth="*" HeadersVisibility="None" HorizontalGridLinesBrush="#FFE5E5E5"
+                      CanUserAddRows="False" CanUserSortColumns="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" AutoGenerateColumns="False">
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="3 5 5 5"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Месяц" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" IsReadOnly="True" Binding="{Binding Month, UpdateSourceTrigger=PropertyChanged}" Width="100" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Публ."  TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Binding="{Binding Publications, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Видео"  TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Binding="{Binding Videos, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Часы"  TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Binding="{Binding Hours, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Повт. п"  TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Binding="{Binding ReturnVisits, UpdateSourceTrigger=PropertyChanged}">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Изуч." TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Binding="{Binding BibleStudy, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Примечания" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Width="3*" Binding="{Binding Notice, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>
+        <Grid x:Name="Archive" IsEnabled="False" Visibility="Collapsed" HorizontalAlignment="Stretch" Grid.Column=" 1" Grid.ColumnSpan="2" Grid.Row="1" Background="#FFE5E5E5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="200*"/>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="200*"/>
+                <ColumnDefinition Width="224*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Укажите дату с" Grid.Column="1" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14"/>
+            <Label Content="по" Grid.Column="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14"/>
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="101*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="94*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="ComboBoxMeetArchiveMonthFirst" IsEditable="True"
+                          TextBlock.FontFamily="PT Sans"  TextBlock.FontSize="12" TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Месяц" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="10,6,0,6" />
+                <ComboBox x:Name="ComboBoxMeetArchiveYearFirst" IsEditable="True" Grid.Column="2"
+                         TextBlock.FontFamily="PT Sans"  TextBlock.FontSize="12"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="10,6,0,6" />
+            </Grid>
+            <Grid Grid.Column="3" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="101*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="94*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="ComboBoxMeetArchiveMonthSecond" IsEditable="True"
+                          TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Месяц" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="10,6,0,6" />
+                <ComboBox x:Name="ComboBoxMeetArchiveYearSecond" IsEditable="True" Grid.Column="2"
+                         TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="10,6,0,6" />
+            </Grid>
+            <Label Content="Тип возвещателя" Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14"/>
+            <ComboBox x:Name="ComboboxTypePublisher" IsEditable="True" Grid.Column="1" Grid.Row="4"
+                       TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Возвещатель" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="10,6,0,6"/>
+            <Grid Grid.Column="3" Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="101*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="94*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="ButtonShowMeetReportsArchive" Content="Поиск" IsEnabled="False" Click="ButtonClickShowMeetReportsArchive" Height="Auto " Width="Auto" 
+                        TextBlock.FontFamily="PPT Sans" TextBlock.FontSize="13" VerticalContentAlignment="Center"  HorizontalContentAlignment="Center" Background="#FF5C3C86" BorderBrush="#FF5C3C86"/>
+            </Grid>
+            <Grid Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Год" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Месяц" Grid.Column="1" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Возвещатель" Grid.Column="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Сдало" Grid.Column="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Публ." Grid.Column="4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Видео" Grid.Column="5" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Часы" Grid.Column="6" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Повт." Grid.Column="7" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+                <Label Content="Изуч." Grid.Column="8" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" TextBlock.FontWeight="DemiBold" Padding="2"/>
+            </Grid>
+            <DataGrid x:Name="DataGridArchive" AutoGenerateColumns="False" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="7" HeadersVisibility="None" HorizontalGridLinesBrush="#FFE5E5E5"
+                      CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" CanUserSortColumns="False">
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="3 5 5 5"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Год" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" IsReadOnly="True" Binding="{Binding Year}" Width="70" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Месяц" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" IsReadOnly="True" Binding="{Binding Month}" Width="100" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Возвещатель" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" IsReadOnly="True" Binding="{Binding Type}" Width="150" >
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Сдало" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" Binding="{Binding CountReports, UpdateSourceTrigger=PropertyChanged}"  Width="1*">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Публ."  TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" Binding="{Binding Publications}" Width="1*">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Видео" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" Binding="{Binding Videos}" Width="1*">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Часы"  TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" Binding="{Binding Hours}" Width="1*">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Повт."  TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" Binding="{Binding ReturnVisits}" Width="1*">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Изуч." TextBlock.FontFamily="PT Sans" TextBlock.FontSize="14" Binding="{Binding BibleStudy}" Width="1*">
+                        <DataGridTextColumn.HeaderStyle>
+                            <Style>
+                                <Setter Property="TextBlock.Background" Value="White"/>
+                                <Setter Property="TextBlock.FontSize" Value="16"/>
+                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Grid x:Name="NoActivity" IsEnabled="False"  Visibility="Collapsed" HorizontalAlignment="Stretch" Grid.Column=" 1" Grid.ColumnSpan="2" Grid.Row="1" Background="#FFE5E5E5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Выберите год" Grid.Column="1" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="15"/>
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140*"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="140*"/>
+                    <ColumnDefinition Width="263*"/>
+                    <ColumnDefinition Width="88*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="YearNoActivityPablisherComboBox" 
+                      IsEditable="True" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="4,6,0,6" Margin="0,0,0,0.4"/>
+                <Button Name="ShowNoActivityPublisherButton" IsEnabled="False" Content="Показать" Grid.Column="2" Height="Auto" Width="Auto" Click="ShowNoActivityPublisherButton_Click"
+                        TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" Background="#FF5C3C86" BorderBrush="#FF5C3C86" />
+                <Button Name="SaveChangeActivePublisherButton" Grid.Column="4"  Visibility="Hidden" IsEnabled="False" HorizontalAlignment="Stretch" Click="SaveChangeActivePublisher_Click" VerticalAlignment="Stretch" Background="#FF5C3C86" BorderBrush="#FF5C3C86">
+                    <Image Source="Resources/SaveIcon.png"/>
+                </Button>
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Дата посл. отчёта" Grid.Column="0"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" TextBlock.FontWeight="DemiBold"/>
+                <Label Content="ФИО Возвещателя" Grid.Column="1" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                   TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" TextBlock.FontWeight="DemiBold"/>
+            </Grid>
+            <DataGrid Name="NoActivityPublisherDataGrid" Grid.Column="1" Grid.Row="4" HeadersVisibility="None" VerticalScrollBarVisibility="Auto" PreviewKeyDown="NoActivityPublisherDataGrid_PreviewKeyDown"  HorizontalGridLinesBrush="#FFE5E5E5" 
+                      CanUserAddRows="False" CanUserDeleteRows="True" CanUserResizeColumns="False" CanUserReorderColumns="False" AutoGenerateColumns="False" CellEditEnding="NoActivityPublisherDataGrid_CellEditEnding"
+                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="0 5 5 5"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Дата посл. отчёта" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" TextBlock.TextAlignment="Left" 
+                                        Binding="{Binding Path=Date, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+                    <DataGridTextColumn Header="ФИО возвещателей" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="13" TextBlock.TextAlignment="Left" 
+                                       Binding="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Grid x:Name="SettingWindow" IsEnabled="False"  Visibility="Collapsed" HorizontalAlignment="Stretch" Grid.Column=" 1" Grid.ColumnSpan="2" Grid.Row="1" Background="#FFE5E5E5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="305*"/>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="305*"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Имя пользователя" Grid.Column="1" TextBlock.FontFamily="PT Sans" TextBlock.FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+            <Grid Grid.Column="1" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200*"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="100*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Name="TextBoxUserName"
+                        TextBlock.FontFamily="PT Sans" TextBlock.FontSize="16" Foreground="Black" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                        MouseDoubleClick="TextBoxMouseDoubleClickHandler" TextChanged="TextBoxTextChangedHandler"/>
+                <Button x:Name="ButtonReSavingSetting" Grid.Column="2" IsEnabled="False" Click="ButtonReSavingSetting_Click"
+                        Height="Auto" Content="Изменить" TextBlock.FontSize="11" TextBlock.FontFamily="PT Sans"  Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+            </Grid>
+            <Grid Grid.Column="3" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150*"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="150*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="SaveSettings" Click="SaveSettings_Click"  
+                    Height="Auto" Content="Сохранить настройки" TextBlock.FontSize="11" TextBlock.FontFamily="PT Sans"  Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+                <Button Grid.Column="2" x:Name="ButtonSearchSettingFile" Click="ButtonClickOpenFileDialog"
+                        Height="Auto" Content="Загрузить настройки" TextBlock.FontSize="11" TextBlock.FontFamily="PT Sans"  Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+            </Grid>
+            <GridSplitter  Grid.Row="3" ShowsPreview="False"  Grid.Column="1" Grid.ColumnSpan="3"  Height="3"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center"  Background="#FFF9F9F9" />
+            <ScrollViewer Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="5" Grid.RowSpan="2">
+                <Grid Height="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <!--0-->
+                        <!--JWBook Settings-->
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="10"/>
+                        <!--PDF Settings-->
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100*"/>
+                        <ColumnDefinition Width="32"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="67*"/>
+                        <ColumnDefinition Width="15"/>
+                    </Grid.ColumnDefinitions>
+                    <!--JWBook-->
+                    <Label Content="JWBook" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                            TextBlock.FontFamily="PT Sans" TextBlock.FontSize="16" TextBlock.FontWeight="DemiBold"/>
+                    <Label Grid.Column="0" Grid.Row="1" Content="JWBook Excel файл" HorizontalContentAlignment="Left" VerticalAlignment="Center" TextBlock.FontFamily="TP Sans" TextBlock.FontSize="13"/>
+                    <TextBox  Grid.Column="0" Grid.Row="2"  Name="TextBoxJWBookExcelFile" Background="White" Text="Путь к файлу" Foreground="#FF8B8B8B" 
+                              TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                              MouseDoubleClick="TextBoxMouseDoubleClickHandler" TextChanged="TextBoxTextChangedHandler">
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="false">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                                    <Border x:Name="border" BorderBrush="{x:Null}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                                            Background="{TemplateBinding Background}" Padding="4 8 4 8" SnapsToDevicePixels="True">
+                                                        <TextBlock Text="{TemplateBinding Text}"  TextTrimming="CharacterEllipsis"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <Button Name="ButtonSearchJWBookFile" Grid.Column="2" Grid.Row="2" Click="ButtonClickOpenFileDialog"
+                                Height="Auto" Content="Выбрать" TextBlock.FontSize="11" TextBlock.FontFamily="PT Sans"  Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+                    <!--S-21-->
+                    <Label Content="PDF конвертирование" Grid.Column="0" Grid.Row="4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                            TextBlock.FontFamily="PT Sans" TextBlock.FontSize="16" TextBlock.FontWeight="DemiBold"/>
+                    <Label Grid.Column="0" Grid.Row="5" Content="Место создания картотеки"  HorizontalContentAlignment="Left" VerticalAlignment="Center" TextBlock.FontFamily="TP Sans" TextBlock.FontSize="13" />
+                    <TextBox  Grid.Column="0" Grid.Row="6"  x:Name="TextBoxPuthToUnloadingFolder" Background="White" Text="Путь к папке" Foreground="#FF8B8B8B" 
+                              TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+                              MouseDoubleClick="TextBoxMouseDoubleClickHandler" TextChanged="TextBoxTextChangedHandler">
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="false">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                                    <Border x:Name="border" BorderBrush="{x:Null}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                                            Background="{TemplateBinding Background}" Padding="4 8 4 8" SnapsToDevicePixels="True">
+                                                        <TextBlock Text="{TemplateBinding Text}"  TextTrimming="CharacterEllipsis"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <Button x:Name="ButtonSearchFolderToUnload" Grid.Column="2" Grid.Row="6" Click="ButtonClickOpenFileDialog"
+                                        Height="Auto" Content="Выбрать" TextBlock.FontSize="11" TextBlock.FontFamily="PT Sans"  Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+                    <Label Grid.Column="0" Grid.Row="8" Content="Бланк S-21"  HorizontalContentAlignment="Left" VerticalAlignment="Center" TextBlock.FontFamily="TP Sans" TextBlock.FontSize="13" />
+                    <TextBox Grid.Column="0" Grid.Row="9" x:Name="TextBoxPuthToPdfTamplateS21" Background="White" Text="Путь к месту хранения бланка" Foreground="#FF8B8B8B" 
+                              TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                              MouseDoubleClick="TextBoxMouseDoubleClickHandler" TextChanged="TextBoxTextChangedHandler">
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="false">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                                    <Border x:Name="border" BorderBrush="{x:Null}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                                            Background="{TemplateBinding Background}" Padding="4 8 4 8" SnapsToDevicePixels="True">
+                                                        <TextBlock Text="{TemplateBinding Text}"  TextTrimming="CharacterEllipsis"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <Button x:Name="ButtonSearchPdfS21Blank" Grid.Column="2" Grid.Row="9" Click="ButtonClickOpenFileDialog"
+                                        Height="Auto" Content="Выбрать" TextBlock.FontSize="11" TextBlock.FontFamily="PT Sans"  Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+                    <Label Grid.Column="0" Grid.Row="11" Content="Excel документ (данные возвещателей)"  HorizontalContentAlignment="Left" VerticalAlignment="Center" TextBlock.FontFamily="TP Sans" TextBlock.FontSize="13" />
+                    <TextBox  Grid.Column="0" Grid.Row="12" x:Name="TextBoxPuthToExcelFileDataPublisher" Background="White" Text="Путь к месту хранения файла excel" Foreground="#FF8B8B8B" 
+                              TextBlock.FontFamily="PT Sans" TextBlock.FontSize="12" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
+                              MouseDoubleClick="TextBoxMouseDoubleClickHandler" TextChanged="TextBoxTextChangedHandler">
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="false">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                                    <Border x:Name="border" BorderBrush="{x:Null}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                                            Background="{TemplateBinding Background}" Padding="4 8 4 8" SnapsToDevicePixels="True">
+                                                        <TextBlock Text="{TemplateBinding Text}"  TextTrimming="CharacterEllipsis"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <Button x:Name="ButtonSearchExcelFile" Grid.Column="2" Grid.Row="12" Click="ButtonClickOpenFileDialog"
+                                         Height="Auto" Content="Выбрать" TextBlock.FontSize="11" TextBlock.FontFamily="PT Sans"  Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+        <Grid x:Name="HamburgerMenu"  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="62*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <hamburgerMenu:HamburgerMenu  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" IsEnabled="True" MenuIconColor="White" MenuItemForeground="White"  SelectionIndicatorColor="White" Background="#FF392352" IsOpen="False"  HorizontalAlignment="Left" >
+                <hamburgerMenu:HamburgerMenuItem x:Name="StartWindow"   Background="#FFB0652E" Text="Главная" MouseDoubleClick="HamburgerMenuItemHomePage" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/HomeItem.png"/>
+                <hamburgerMenu:HamburgerMenuItem x:Name="MonthReportWindow" IsEnabled="False" Text="Месяц служения" MouseDoubleClick="HamburgerMenuItemMonthReportPage" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/MonthCalendarItem.png"/>
+                <hamburgerMenu:HamburgerMenuItem x:Name="S21Window" IsEnabled="False" Text="Заполнить S-21" MouseDoubleClick="HamburgerMenuItemS21Page" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/PdfFileItem.png"/>
+                <hamburgerMenu:HamburgerMenuItem x:Name="PublishersWindow" IsEnabled="False" Text="Возвещатели" MouseDoubleClick="HamburgerMenuItemPublisherInfoPage" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/PortretItem.png" />
+                <hamburgerMenu:HamburgerMenuItem x:Name="ArchiveMinistryWindow" IsEnabled="False" Text="Архив служения" MouseDoubleClick="HamburgerMenuItemArchivePage" TextBlock.FontFamily="Consolas"  Icon="Resources/HamburgerMenu/ArchiveItem.png"/>
+                <hamburgerMenu:HamburgerMenuItem x:Name="NoActivityWindow" IsEnabled="False" Text="Неактивные" MouseDoubleClick="HamburgerMenuItemNoActivityPage" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/BadSmileItem.png"/>
+                <hamburgerMenu:HamburgerMenuItem x:Name="SettingsWindow" Text="Настройки" MouseDoubleClick="SettingsWindow_MouseDoubleClick" TextBlock.FontFamily="Consolas" Icon="Resources/HamburgerMenu/SettingsItem.png"/>
+            </hamburgerMenu:HamburgerMenu>
+        </Grid>
+
+
+
+
+
+
+    </Grid>
+</Window>
