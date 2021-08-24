@@ -8,7 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MinistryReports.Models;
-using MinistryReports.Models.S_21;
+using MinistryReports.Models.S21;
 using MinistryReports.Controllers;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.Globalization;
@@ -136,7 +136,7 @@ namespace MinistryReports
             {
                 MainWindow mainWindow = null;
                 this.Dispatcher.Invoke(() => mainWindow = this.Owner as MainWindow);
-                JwBookExcel excel = new JwBookExcel(mainWindow._userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(mainWindow._userSettings.JWBookSettings.JWBookPath);
                 JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(excel);
                 if (dpExcel.IsPublisherContainsInTable(publisher.Name) == true)
                 {

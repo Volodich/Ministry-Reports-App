@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using MinistryReports.Models;
+using MinistryReports.Models.S21;
 using MinistryReports.ViewModels;
 
 namespace MinistryReports.Services
@@ -22,7 +23,7 @@ namespace MinistryReports.Services
                 UserName = "admin",
                 JWBookSettings = new JWBookSettings()
                 {
-                    JWBookPuth = Path.Combine(Path.GetPathRoot(Environment.CurrentDirectory), ApplicationConfig.FolderName, ApplicationConfig.SettingsFolder),
+                    JWBookPath = Path.Combine(Path.GetPathRoot(Environment.CurrentDirectory), ApplicationConfig.FolderName, ApplicationConfig.SettingsFolder),
                     // TODO: initialize
                 },
                 S21Settings = new S21Settings()

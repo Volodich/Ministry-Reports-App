@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using iTextSharp.text.pdf;
 using MinistryReports.Models;
-using MinistryReports.Models.S_21;
+using MinistryReports.Models.S21;
 using MinistryReports.ViewModels;
 
 namespace MinistryReports.Services

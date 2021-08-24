@@ -1,5 +1,5 @@
-﻿using System;
-using MinistryReports.Models;
+﻿using MinistryReports.Models;
+using MinistryReports.Models.S21;
 
 namespace MinistryReports.ViewModels
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MinistryReports.Models
+﻿namespace MinistryReports.Models.S21
 {
     public class S21Settings
     {

@@ -4,7 +4,7 @@ using MinistryReports.Controllers;
 using MinistryReports.Extensions;
 using MinistryReports.Models;
 using MinistryReports.Models.JWBook;
-using MinistryReports.Models.S_21;
+using MinistryReports.Models.S21;
 using MinistryReports.Services;
 using MinistryReports.ViewModels;
 using System;
@@ -98,8 +98,7 @@ namespace MinistryReports
 
         private void ComboboxSelected(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
-            if (comboBox != null)
+            if (sender is ComboBox comboBox)
             {
                 comboBox.Text = comboBox.SelectedItem.ToString();
             }
@@ -110,40 +109,6 @@ namespace MinistryReports
             TextBox textBox = sender as TextBox;
             textBox.Text = String.Empty;
             textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-        }
-
-        private int MonthConvertToInt(string month)
-        {
-            switch (month.ToLower())
-            {
-                case "январь":
-                    return 1;
-                case "февраль":
-                    return 2;
-                case "март":
-                    return 3;
-                case "апрель":
-                    return 4;
-                case "май":
-                    return 5;
-                case "июнь":
-                    return 6;
-                case "июль":
-                    return 7;
-                case "август":
-                    return 8;
-                case "сентябрь":
-                    return 9;
-                case "октябрь":
-                    return 10;
-                case "ноябрь":
-                    return 11;
-                case "декабрь":
-                    return 12;
-                default:
-                    throw new FormatException("Не удалось расспознать месяц.");
-
-            }
         }
 
         #region HomePage
@@ -181,7 +146,7 @@ namespace MinistryReports
             }
             try
             {
-                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                 excel.ConnectFile();
 
                 JwBookExcel.DataPublisher dataPublisher = new JwBookExcel.DataPublisher(excel);
@@ -220,7 +185,7 @@ namespace MinistryReports
             bool currentFlag = false;
             if (DateTime.Now.Year.ToString() == year)
             {
-                if (DateTime.Now.Month - MonthConvertToInt(month) == 1 || DateTime.Now.Month - MonthConvertToInt(month) == -11)
+                if (DateTime.Now.Month - month.ToInt32NumberMonth() == 1 || DateTime.Now.Month - month.ToInt32NumberMonth() == -11)
                 {
                     currentFlag = true;
                 }
@@ -241,7 +206,7 @@ namespace MinistryReports
                     this.Dispatcher.Invoke(() => waitWindow.Show()); // <--- Запускаем окно.
                     try
                     {
-                        JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                        JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                         JwBookExcel.DataPublisher dataPublisher = new JwBookExcel.DataPublisher(excel);
 
                         ObservableCollection<JWMonthReport> monthReports = new ObservableCollection<JWMonthReport>();
@@ -366,7 +331,7 @@ namespace MinistryReports
 
         private async void SaveMonthReportButtonClick(object sender, RoutedEventArgs e)
         {
-            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
             JwBookExcel.ArchiveReports archive = new JwBookExcel.ArchiveReports(excel);
 
             WarningWindow warning = new WarningWindow();
@@ -426,7 +391,7 @@ namespace MinistryReports
 
         private async void UploadMonthReportWarningWindowBtnClick(object sender, RoutedEventArgs e)
         {
-            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
             JwBookExcel.ArchiveReports archive = new JwBookExcel.ArchiveReports(excel);
 
             var data = meetreports;
@@ -493,7 +458,7 @@ namespace MinistryReports
             MenuNameLabel.Content = "Возвещатели";
             try
             {
-                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                 JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(excel);
                 int startYear = dpExcel.StartMinistryYear;
                 int currentYear = DateTime.Now.Year + 1;
@@ -582,7 +547,7 @@ namespace MinistryReports
             }
 
             var publisherInfoS21FieldFormat = _s21Manager.GetS21InfoPublisherFields(_userSettings.S21Settings).ToList();
-            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
             JwBookExcel.DataPublisher dataMinistryPublisher = new JwBookExcel.DataPublisher(excel);
 
             string puthFolder = String.Empty;
@@ -701,7 +666,7 @@ namespace MinistryReports
             {
                 try
                 {
-                    JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                    JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                     JwBookExcel.DataPublisher dataPublisher = new JwBookExcel.DataPublisher(excel);
 
                     int startYear = dataPublisher.StartMinistryYear;
@@ -769,7 +734,7 @@ namespace MinistryReports
             {
                 try
                 {
-                    JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                    JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                     JwBookExcel.DataPublisher dataMinistryPublisher = new JwBookExcel.DataPublisher(excel);
                     var yearMinistryData = dataMinistryPublisher.GetYearReportsPublisher(namePublisher, year);
 
@@ -822,7 +787,7 @@ namespace MinistryReports
             string year = ComboBoxYearsPublisherInfo.Text;
             await Task.Run(() =>
             {
-                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                 JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(excel);
 
                 object[,] updateData = new object[6, 12];
@@ -868,7 +833,7 @@ namespace MinistryReports
             }
             try
             {
-                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                 JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(excel);
 
                 int startYear = dpExcel.StartMinistryYear;
@@ -902,7 +867,7 @@ namespace MinistryReports
         {
             try
             {
-                JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth));
+                JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(new JwBookExcel(_userSettings.JWBookSettings.JWBookPath));
 
                 if (ComboBoxMeetArchiveYearFirst.Text == String.Empty || ComboBoxMeetArchiveYearSecond.Text == String.Empty ||
                     ComboBoxMeetArchiveMonthFirst.Text == String.Empty || ComboBoxMeetArchiveMonthSecond.Text == String.Empty ||
@@ -914,13 +879,13 @@ namespace MinistryReports
                 if (ComboboxTypePublisher.Text == String.Empty)
                     throw new FormatException("Укажите тип возвещателя, который необходимо вывести!");
                 if ((Int32.Parse(ComboBoxMeetArchiveYearFirst.Text) == Int32.Parse(ComboBoxMeetArchiveYearSecond.Text)) && // Если года ровны
-                    MonthConvertToInt(ComboBoxMeetArchiveMonthFirst.Text) > MonthConvertToInt(ComboBoxMeetArchiveMonthSecond.Text)) // Если первый месяц больше чем второй. Например Апрель (4) больше чем Март (3).
+                    ComboBoxMeetArchiveMonthFirst.Text.ToInt32NumberMonth() > ComboBoxMeetArchiveMonthSecond.Text.ToInt32NumberMonth()) // Если первый месяц больше чем второй. Например Апрель (4) больше чем Март (3).
                     throw new FormatException("Проверьте правильно ли Вы указали месяцы. Возможно вы перепутали местами даты.");
-                if (Convert.ToInt32(ComboBoxMeetArchiveYearFirst.Text) == dpExcel.StartMinistryYear && MonthConvertToInt(ComboBoxMeetArchiveMonthFirst.Text) < 9) // 9 - Сентябрь - первый месяц начала нового служебного года. 
+                if (Convert.ToInt32(ComboBoxMeetArchiveYearFirst.Text) == dpExcel.StartMinistryYear && ComboBoxMeetArchiveMonthFirst.Text.ToInt32NumberMonth() < 9) // 9 - Сентябрь - первый месяц начала нового служебного года. 
                 {
                     throw new FormatException($"Данные за выбранный период не доступны. В Вашей Google таблице отчёты начинаються с сентября {dpExcel.StartMinistryYear} года .");
                 }
-                if (Convert.ToInt32(ComboBoxMeetArchiveYearSecond.Text) == dpExcel.StartMinistryYear && MonthConvertToInt(ComboBoxMeetArchiveMonthSecond.Text) < 9) // 9 - Сентябрь - первый месяц начала нового служебного года. 
+                if (Convert.ToInt32(ComboBoxMeetArchiveYearSecond.Text) == dpExcel.StartMinistryYear && ComboBoxMeetArchiveMonthSecond.Text.ToInt32NumberMonth() < 9) // 9 - Сентябрь - первый месяц начала нового служебного года. 
                 {
                     throw new FormatException($"Данные за выбранный период не доступны. В Вашей Google таблице отчёты начинаються с сентября {dpExcel.StartMinistryYear} года.");
                 }
@@ -948,7 +913,7 @@ namespace MinistryReports
 
             try
             {
-                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                 JwBookExcel.ArchiveReports archive = new JwBookExcel.ArchiveReports(excel);
 
                 var archiveReports = await Task.Run(() => archive.GetArchive(new string[] { fMonth, fYear, sMonth, sYear }, typePublisher));
@@ -1007,7 +972,7 @@ namespace MinistryReports
             }
             try
             {
-                JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth));
+                JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(new JwBookExcel(_userSettings.JWBookSettings.JWBookPath));
                 int startYear = dpExcel.StartMinistryYear;
                 int currentYear = DateTime.Now.Year;
 
@@ -1032,7 +997,7 @@ namespace MinistryReports
                 MyMessageBox.Show("Укажите правильно год!", "Ошибка");
                 goto exitMethod;
             }
-            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+            JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
             JwBookExcel.NoActivePublishers noActive = new JwBookExcel.NoActivePublishers(excel);
 
             var dataPublisher = await Task.Run(() => noActive.GetPublishers(year.ToString()));
@@ -1137,7 +1102,7 @@ namespace MinistryReports
                 TextBoxUserName.Text = userSettings.UserName;
                 TextBoxUserName.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
 
-                TextBoxJWBookExcelFile.Text = userSettings.JWBookSettings.JWBookPuth;
+                TextBoxJWBookExcelFile.Text = userSettings.JWBookSettings.JWBookPath;
                 TextBoxJWBookExcelFile.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
 
                 // S-21
@@ -1315,8 +1280,8 @@ namespace MinistryReports
                             {
                                 // заносим данные в экземпляр класса UserSettings
                                 _userSettings.UserName = TextBoxUserName.Text;
-                                //JwBook
-                                _userSettings.JWBookSettings.JWBookPuth = TextBoxJWBookExcelFile.Text;
+                                //JwBookExcel
+                                _userSettings.JWBookSettings.JWBookPath = TextBoxJWBookExcelFile.Text;
                                 // S-21
                                 _userSettings.S21Settings.PuthToFolderUnlaoding = TextBoxPuthToUnloadingFolder.Text;
                                 _userSettings.S21Settings.PuthToTamplate = TextBoxPuthToPdfTamplateS21.Text;

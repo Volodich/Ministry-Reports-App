@@ -20,7 +20,7 @@
 
         public int SheetIdDataMinistry { get; set; } // Именно этот тип!
 
-        public string JWBookPuth { get; set; }
+        public string JWBookPath { get; set; }
 
     }
 }

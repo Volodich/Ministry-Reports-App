@@ -188,6 +188,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ApplicationConfig.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\NotoficationExtensions.cs" />
     <Compile Include="Initialize.cs" />
     <Compile Include="JWBook\JwBookExcel.cs" />
@@ -205,15 +206,16 @@
     <Compile Include="Models\JWBook\MonthReport.cs" />
     <Compile Include="Models\JWBook\JWBookSettings.cs" />
     <Compile Include="Models\JWBook\Publisher.cs" />
-    <Compile Include="Models\S-21\PublishersRange.cs" />
-    <Compile Include="Models\S-21\S21Settings.cs" />
+    <Compile Include="Models\S21\PublishersRange.cs" />
+    <Compile Include="Models\S21\S21Settings.cs" />
     <Compile Include="ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\BackupService.cs" />
     <Compile Include="Services\DirectoryService.cs" />
-    <Compile Include="Services\Excel\ExcelManager.cs" />
-    <Compile Include="Services\Excel\ExcelService.cs" />
+    <Compile Include="Services\Publishers\MinistryDataService.cs" />
+    <Compile Include="Services\Publishers\JwBookExcel.cs" />
+    <Compile Include="Services\Publishers\PublisherDataManager.cs" />
     <Compile Include="Services\S21\S21Manager.cs" />
     <Compile Include="Services\S21\S21Service.cs" />
     <Compile Include="Services\UserSettingsService.cs" />
@@ -304,7 +306,9 @@
   <ItemGroup>
     <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ToRefact\" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>

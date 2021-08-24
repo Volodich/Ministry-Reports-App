@@ -1,53 +1,55 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Collections.Generic;
-using OfficeOpenXml;
+using System.Linq;
 using MinistryReports.Models.S21;
-using MinistryReports.Models;
-using Org.BouncyCastle.Asn1.X509;
-using System.Threading;
-using System.Diagnostics;
+using OfficeOpenXml;
 
-namespace MinistryReports.ExcelPublisher
+namespace MinistryReports.Services.Publishers
 {
-    class ExcelPublisher 
+    public interface IPublisherDataManager
     {
-        internal ExcelWorksheet publishersWorksheet;
-        internal ExcelPackage package;
-        
-        static string puthToFile;
-        static string NameTable { get => "Publishers"; }
+        void CheckConnect();
+        IEnumerable<PublishersRange> GetPublishers();
+        void AddPublisher(PublishersRange publisher);
+    }
+    public class PublisherDataManager : IPublisherDataManager
+    {
+        private ExcelWorksheet _publishersWorksheet;
+        private ExcelPackage _package;
 
-        public ExcelPublisher(S21Settings settings)
+        private readonly string _pathToFile;
+        static string NameTable => ApplicationConfig.PublisherInfo.TableName;
+
+        public PublisherDataManager(S21Settings settings)
         {
-            if(settings != null)
+            if (settings != null)
             {
-                puthToFile = settings.PuthToExcelDbFile;
+                _pathToFile = settings.PuthToExcelDbFile;
             }
+
             CheckConnect();
         }
 
-        public bool CheckConnect()
+        public void CheckConnect()
         {
-            FileInfo fileInfo = new FileInfo(puthToFile);
+            FileInfo fileInfo = new FileInfo(_pathToFile);
+
             if (fileInfo.Exists)
             {
-                package = new ExcelPackage(fileInfo);
-                ExcelWorksheet excelWorksheets = package.Workbook.Worksheets[NameTable];
+                _package = new ExcelPackage(fileInfo);
+                ExcelWorksheet excelWorksheets = _package.Workbook.Worksheets[NameTable];
                 if (excelWorksheets != null)
                 {
-                    this.publishersWorksheet = excelWorksheets;
-                    return true;
+                    this._publishersWorksheet = excelWorksheets;
                 }
                 throw new FileLoadException($"Таблица не содержит данных возвещателей. Проверьте правильный ли Вы выбрали excel файл. Либо есть ли в нужном файле лист {NameTable}.");
             }
-            throw new FileNotFoundException($"Невозможно найти файл по такому расположению: {puthToFile}");
+            throw new FileNotFoundException($"Невозможно найти файл по такому расположению: {_pathToFile}");
         }
 
-
-        public List<PublishersRange> GetPublishers(ExcelWorksheet worksheet)
+        public IEnumerable<PublishersRange> GetPublishers()
         {
-            var dataPublishers = (object[,])worksheet.Cells.Value;
+            var dataPublishers = (object[,])_publishersWorksheet.Cells.Value;
             List<PublishersRange> publishers = new List<PublishersRange>(dataPublishers.GetLength(0));
 
             for (int i = 1; i < dataPublishers.GetLength(0); i++)
@@ -70,11 +72,14 @@ namespace MinistryReports.ExcelPublisher
             return publishers;
         }
 
-        public void AddPublisher(PublishersRange publisher, int startIndex)
+        // TODO: refact: сделать бул возврат. Если н удалось добавить вернуть фолс и сделать запись в лог журнал.
+        public void AddPublisher(PublishersRange publisher)
         {
-            using (var p = new ExcelPackage(package.File))
+            var startIndex = GetPublisherIndex(publisher);
+
+            using (var p = new ExcelPackage(_package.File))
             {
-                ExcelWorksheet ws = package.Workbook.Worksheets[NameTable];
+                ExcelWorksheet ws = _package.Workbook.Worksheets[NameTable];
                 ws.InsertRow(startIndex, 1);
                 ws.Cells[$"A{startIndex}"].Value = publisher.Name; // Имя Фамилия возвещателя
                 ws.Cells[$"B{startIndex}"].Value = publisher.DateBirth; // Дата рождения
@@ -86,8 +91,16 @@ namespace MinistryReports.ExcelPublisher
                 ws.Cells[$"H{startIndex}"].Value = publisher.Mobile2; // Номер телефона 2
                 ws.Cells[$"I{startIndex}"].Value = publisher.Appointment; // Назначение (братья)
 
-                package.Save();
+                _package.Save();
             }
+        }
+
+        private int GetPublisherIndex(PublishersRange publisher)
+        {
+            var publishersInfo = GetPublishers().ToList();
+            publishersInfo.Add(publisher);
+
+            return publishersInfo.OrderBy(p => p.Name).ToList().IndexOf(publisher);
         }
     }
 }

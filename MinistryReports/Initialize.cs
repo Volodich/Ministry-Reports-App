@@ -36,7 +36,7 @@ namespace MinistryReports
             {
                 _userSettings = _backupService.GetLoadSettings(null);
                 // TODO: refactor
-                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPath);
                 try
                 {
                     excel.ConnectFile();

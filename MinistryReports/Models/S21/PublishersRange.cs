@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MinistryReports.Models.S_21
+﻿namespace MinistryReports.Models.S21
 {
-    class PublishersRange
+    public class PublishersRange
     {
         public string Name { get; set; }
 

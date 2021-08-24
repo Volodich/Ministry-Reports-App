@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MinistryReports.Models;
 using MinistryReports.ExcelPublisher;
-using MinistryReports.Models.S_21;
+using MinistryReports.Models.S21;
 using MinistryReports.Models.JWBook;
 using System.Runtime.InteropServices.WindowsRuntime;
 
@@ -22,7 +22,7 @@ namespace MinistryReports.Controllers
         public static Task<object> GetDataPublisherAsync(S21Settings settings)
         {
             return Task.Run(() => GetDataPublisher(settings));
-            
+
         }
 
         public static bool CheckConnect(S21Settings settings)
