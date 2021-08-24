@@ -1,30 +1,25 @@
 ﻿using ConsoleApp4.JWBook;
 using Microsoft.Win32;
 using MinistryReports.Controllers;
+using MinistryReports.Extensions;
 using MinistryReports.Models;
 using MinistryReports.Models.JWBook;
 using MinistryReports.Models.S_21;
 using MinistryReports.Serialization;
+using MinistryReports.Services;
 using MinistryReports.ViewModels;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Globalization;
 using System.IO; // работа с файловой системой
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using MinistryReports.Extensions;
-using MinistryReports.Services;
 
 namespace MinistryReports
 {
@@ -57,7 +52,7 @@ namespace MinistryReports
             deletePublisher = new ObservableCollection<NoActivityPublisher>();
         }
 
-        private async void MainWindowLoaded(object sender, EventArgs e)
+        private void MainWindowLoaded(object sender, EventArgs e)
         {
             if (sender is MainWindow mainWindow)
             {
@@ -67,7 +62,7 @@ namespace MinistryReports
                     {
                         IsIndeterminate = true, Orientation = System.Windows.Controls.Orientation.Horizontal
                     },
-                    LabelInformation = {Content = String.Empty},
+                    LabelInformation = { Content = String.Empty },
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Owner = this
                 };
@@ -76,7 +71,7 @@ namespace MinistryReports
 
                 Initialize startup = new Initialize(mainWindow, waitWindow);
 
-                var uSettings =  startup.LoadAppSettings();
+                var uSettings = startup.LoadAppSettings();
                 if (uSettings != null)
                 {
                     _userSettings = uSettings;
@@ -118,7 +113,7 @@ namespace MinistryReports
 
         private int MonthConvertToInt(string month)
         {
-            switch(month.ToLower())
+            switch (month.ToLower())
             {
                 case "январь":
                     return 1;
@@ -220,7 +215,7 @@ namespace MinistryReports
             string month = ComboBoxMonth.Text;
             string year = ComboBoxYears.Text;
             // Система покажет несдавших отчёт в том случае, если это текущий месяц а не прошлый. 
-             
+
             bool currentFlag = false;
             if (DateTime.Now.Year.ToString() == year)
             {
@@ -238,16 +233,16 @@ namespace MinistryReports
             waitWindow.Owner = this;
 
 
-            await Task.Run(() => 
-            { 
+            await Task.Run(() =>
+            {
                 if (month != String.Empty && year != String.Empty)
                 {
-                    this.Dispatcher.Invoke(()=> waitWindow.Show()); // <--- Запускаем окно.
+                    this.Dispatcher.Invoke(() => waitWindow.Show()); // <--- Запускаем окно.
                     try
                     {
                         JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
                         JwBookExcel.DataPublisher dataPublisher = new JwBookExcel.DataPublisher(excel);
-                        
+
                         ObservableCollection<JWMonthReport> monthReports = new ObservableCollection<JWMonthReport>();
 
                         monthReports.Add(new JWMonthReport() // Publisher
@@ -289,7 +284,7 @@ namespace MinistryReports
                             CountReports = monthReports[0].CountReports + monthReports[1].CountReports + monthReports[2].CountReports,
                             Publications = monthReports[0].Publications + monthReports[1].Publications + monthReports[2].Publications,
                             Videos = monthReports[0].Videos + monthReports[1].Videos + monthReports[2].Videos,
-                            Hours = monthReports[0].Hours + monthReports[1].Hours + monthReports[2].Hours, 
+                            Hours = monthReports[0].Hours + monthReports[1].Hours + monthReports[2].Hours,
                             ReturnVisits = monthReports[0].ReturnVisits + monthReports[1].ReturnVisits + monthReports[2].ReturnVisits,
                             BibleStudy = monthReports[0].BibleStudy + monthReports[1].BibleStudy + monthReports[2].BibleStudy
                         });
@@ -304,7 +299,7 @@ namespace MinistryReports
 
                         if (currentFlag == true) // true
                         {
-                           
+
                             var publishersWithoutReport = dataPublisher.PublsherWithoutReport(month, year); // возвещатели, которые не сдели отчёт.
                             string arrPublisherWihtoutReport = String.Empty;
                             string longArrPublisherWihtoutReport = "Отчёт не здали: " + "\n";
@@ -321,12 +316,12 @@ namespace MinistryReports
                                 arrPublisherWihtoutReport = "Слишком много возвещателей не здало отчёт. Чтобы увидеть весь список зайдите в Главная и посмотрите список.";
                             }
                             this.Dispatcher.Invoke(() =>
-                            { 
+                            {
                                 MyMessageBox.Show("Отчёт не здали: " + "\n" + arrPublisherWihtoutReport, "Месячный отчёт");
                                 this.AddNotification(this.CreateNotification("Месячный отчёт", longArrPublisherWihtoutReport));
                                 MyMessageBox.Show($"Количество активных возвещателей на {month} {year} год -- {dataPublisher.CountActivePublishers()}.", "Месячный отчёт");
-                                });
-    }
+                            });
+                        }
                         this.Dispatcher.Invoke(() => this.AddNotification(this.CreateNotification("Месячный отчёт", $"Количество активных возвещателей на {month} {year} год -- {dataPublisher.CountActivePublishers()}.")));
                         this.Dispatcher.Invoke(() => SaveMonthReportButton.IsEnabled = true);
                     }
@@ -354,7 +349,7 @@ namespace MinistryReports
                             this.AddNotification(this.CreateNotification("Ошибка", "Ошибка при работе с таблицей. Пожалуйста проверьте правильнность данных в таблице и повторите попытку."));
                         });
                     }
-                    catch(System.IndexOutOfRangeException)
+                    catch (System.IndexOutOfRangeException)
                     {
                         this.Dispatcher.Invoke(() =>
                         {
@@ -391,7 +386,7 @@ namespace MinistryReports
             {
                 var data = meetreports;
                 var sendData = new object[3, 6];
-                for (int i = 0; i < data.Count-1; i++) // Ну учитываем Sum
+                for (int i = 0; i < data.Count - 1; i++) // Ну учитываем Sum
                 {
                     sendData[i, 0] = meetreports[i].CountReports;
                     sendData[i, 1] = meetreports[i].Publications;
@@ -409,7 +404,7 @@ namespace MinistryReports
                         this.AddNotification(this.CreateNotification("Месячный отчёт", $"Данные за {ComboBoxMonth.Text} {ComboBoxYears.Text} сохранены успешно!"));
                     });
                 }
-                catch (System.InvalidOperationException ex) 
+                catch (System.InvalidOperationException ex)
                 {
                     this.Dispatcher.Invoke(() =>
                     {
@@ -417,7 +412,7 @@ namespace MinistryReports
                         this.AddNotification(this.CreateNotification("Месячный отчёт", $"Не удалось сохранить данные.Скорее всего у Вас открыта таблица JWBook.Закройте таблицу и повторите попытку!"));
                     });
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     this.Dispatcher.Invoke(() =>
                     {
@@ -435,8 +430,8 @@ namespace MinistryReports
 
             var data = meetreports;
             var sendData = new object[3, 6];
-            await Task.Run(() => 
-            { 
+            await Task.Run(() =>
+            {
                 for (int i = 0; i < data.Count - 1; i++) // Ну учитываем Sum
                 {
                     sendData[i, 0] = meetreports[i].CountReports;
@@ -576,7 +571,7 @@ namespace MinistryReports
             string publisherName;
 
 
-            
+
 
             if (!_s21Servise.ExistTamplateFile)
             {
@@ -590,11 +585,11 @@ namespace MinistryReports
             JwBookExcel.DataPublisher dataMinistryPublisher = new JwBookExcel.DataPublisher(excel);
 
             string puthFolder = String.Empty;
-            
-            if(TextBoxPuthToFolderUnlaoding.Text == String.Empty)
+
+            if (TextBoxPuthToFolderUnlaoding.Text == String.Empty)
             {
                 TextBoxPuthToFolderUnlaoding.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                MyMessageBox.Show("Укажите папку, в которой создадутся бланки.","Ошибка");
+                MyMessageBox.Show("Укажите папку, в которой создадутся бланки.", "Ошибка");
                 goto Exit;
             }
             this.Dispatcher.Invoke(() =>
@@ -635,9 +630,9 @@ namespace MinistryReports
                         publisherNotFound.Add(publisherName);
                         continue;
                     }
-                    catch(System.IO.IOException ex)
+                    catch (System.IO.IOException ex)
                     {
-                        throw new Exception($"Не удалось найти файл Times New Roman.ttf. Пожалуйста переместите файл в папку {System.IO.Path.Combine(System.IO.Path.GetPathRoot(Environment.CurrentDirectory), "Ministry Reports", "Settings" )}.");
+                        throw new Exception($"Не удалось найти файл Times New Roman.ttf. Пожалуйста переместите файл в папку {System.IO.Path.Combine(System.IO.Path.GetPathRoot(Environment.CurrentDirectory), "Ministry Reports", "Settings")}.");
                     }
                 }
                 this.Dispatcher.Invoke(() => progressWindow.Close());
@@ -648,7 +643,7 @@ namespace MinistryReports
                     string message = "Возвещатели, для которых не удалось создать бланк: " + "\n";
                     for (int i = 0; i < publisherNotFound.Count; i++)
                     {
-                        message += $"{i+1} - " + publisherNotFound[i] + "\n";
+                        message += $"{i + 1} - " + publisherNotFound[i] + "\n";
                     }
                     MyMessageBox.Show(message, "Возвещатели");
                     this.AddNotification(this.CreateNotification("Возвещатели", message));
@@ -666,7 +661,7 @@ namespace MinistryReports
                 TextBoxPuthToFolderUnlaoding.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                 MyMessageBox.Show($"Провертие правильно ли вы указали папку создания pdf файлов.", "Ошибка!");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 progressWindow.Close();
                 MyMessageBox.Show(ex.Message, "Ошибка!");
@@ -717,7 +712,7 @@ namespace MinistryReports
 
                     List<string> yearList = new List<string>(); yearList.AddRange(years);
 
-                    this.Dispatcher.Invoke(() =>  ComboBoxYearsPublisherInfo.ItemsSource = yearList);
+                    this.Dispatcher.Invoke(() => ComboBoxYearsPublisherInfo.ItemsSource = yearList);
 
                     if (ExcelDBController.CheckConnect(_userSettings.S21Settings) == true)
                     {
@@ -737,12 +732,12 @@ namespace MinistryReports
                         });
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     this.Dispatcher.Invoke(() =>
                     {
                         waitWindow.Close();
-                    MessageBox.Show("HamburgerMenuItemPublisherInfoPage Exception!");
+                        MessageBox.Show("HamburgerMenuItemPublisherInfoPage Exception!");
                     });
                 }
             });
@@ -756,13 +751,13 @@ namespace MinistryReports
 
         private async void SearchPublisherInfo_ClickHandler(object sender, RoutedEventArgs e)
         {
-            if(TextBoxPublisherNamePublisherInfo.Text == String.Empty || TextBoxPublisherSurnamePublisherInfo.Text == String.Empty
+            if (TextBoxPublisherNamePublisherInfo.Text == String.Empty || TextBoxPublisherSurnamePublisherInfo.Text == String.Empty
                 || TextBoxPublisherNamePublisherInfo.Text == "Введите имя" || TextBoxPublisherSurnamePublisherInfo.Text == "Введите фамилию")
             {
                 MyMessageBox.Show("Заполните поле 'Имя' и 'Фамилия' для поиска возвещателя.", "Ошибка");
                 goto exitMethod;
             }
-            if(ComboBoxYearsPublisherInfo.Text == String.Empty || ComboBoxYearsPublisherInfo.Text == "Год")
+            if (ComboBoxYearsPublisherInfo.Text == String.Empty || ComboBoxYearsPublisherInfo.Text == "Год")
             {
                 MyMessageBox.Show("Укажите служебный год.", "Ошибка");
                 goto exitMethod;
@@ -808,9 +803,9 @@ namespace MinistryReports
                 }
                 catch (NotSupportedException ex) // Если не удасться найти возвещателя в таблице.
                 {
-                    this.Dispatcher.Invoke(() =>  MyMessageBox.Show(ex.Message, "Ошибка"));
+                    this.Dispatcher.Invoke(() => MyMessageBox.Show(ex.Message, "Ошибка"));
                 }
-                catch(System.IndexOutOfRangeException)
+                catch (System.IndexOutOfRangeException)
                 {
                     this.Dispatcher.Invoke(() => MyMessageBox.Show("Кажется за этот год еще нет отчёта возвещателя.", "Ошибка"));
                 }
@@ -821,7 +816,7 @@ namespace MinistryReports
         private async void PublisherInfoSaveMinistryInformationButton_ClickHandler(object sender, RoutedEventArgs e)
         {
             var publisherMD = dataPublisher as ObservableCollection<JWMonthReport>; // Data Ministry Publisher
-            
+
             string name = $"{TextBoxPublisherSurnamePublisherInfo.Text} {TextBoxPublisherNamePublisherInfo.Text}";
             string year = ComboBoxYearsPublisherInfo.Text;
             await Task.Run(() =>
@@ -852,7 +847,7 @@ namespace MinistryReports
             newPublisher.ShowDialog();
         }
 
-#endregion
+        #endregion
 
         #region Archive Page
         private void HamburgerMenuItemArchivePage(object sender, MouseButtonEventArgs e)
@@ -896,7 +891,7 @@ namespace MinistryReports
 
                 ButtonShowMeetReportsArchive.IsEnabled = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("HamburgerMenuItemArchivePage Exception!");
             }
@@ -907,7 +902,7 @@ namespace MinistryReports
             try
             {
                 JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth));
-                
+
                 if (ComboBoxMeetArchiveYearFirst.Text == String.Empty || ComboBoxMeetArchiveYearSecond.Text == String.Empty ||
                     ComboBoxMeetArchiveMonthFirst.Text == String.Empty || ComboBoxMeetArchiveMonthSecond.Text == String.Empty ||
                     ComboBoxMeetArchiveYearFirst.Text == "Год" || ComboBoxMeetArchiveYearSecond.Text == "Год" ||
@@ -920,7 +915,7 @@ namespace MinistryReports
                 if ((Int32.Parse(ComboBoxMeetArchiveYearFirst.Text) == Int32.Parse(ComboBoxMeetArchiveYearSecond.Text)) && // Если года ровны
                     MonthConvertToInt(ComboBoxMeetArchiveMonthFirst.Text) > MonthConvertToInt(ComboBoxMeetArchiveMonthSecond.Text)) // Если первый месяц больше чем второй. Например Апрель (4) больше чем Март (3).
                     throw new FormatException("Проверьте правильно ли Вы указали месяцы. Возможно вы перепутали местами даты.");
-                if( Convert.ToInt32(ComboBoxMeetArchiveYearFirst.Text) == dpExcel.StartMinistryYear&& MonthConvertToInt(ComboBoxMeetArchiveMonthFirst.Text) < 9) // 9 - Сентябрь - первый месяц начала нового служебного года. 
+                if (Convert.ToInt32(ComboBoxMeetArchiveYearFirst.Text) == dpExcel.StartMinistryYear && MonthConvertToInt(ComboBoxMeetArchiveMonthFirst.Text) < 9) // 9 - Сентябрь - первый месяц начала нового служебного года. 
                 {
                     throw new FormatException($"Данные за выбранный период не доступны. В Вашей Google таблице отчёты начинаються с сентября {dpExcel.StartMinistryYear} года .");
                 }
@@ -935,7 +930,7 @@ namespace MinistryReports
                 MyMessageBox.Show($"{ex.Message}", "Ошибка");
                 goto exitMethod;
             }
-            
+
             string typePublisher = ComboboxTypePublisher.Text;
             string fYear = ComboBoxMeetArchiveYearFirst.Text;
             string sYear = ComboBoxMeetArchiveYearSecond.Text;
@@ -959,8 +954,8 @@ namespace MinistryReports
                 List<JWMonthReport> monthsReports = new List<JWMonthReport>();
                 foreach (var ar in archiveReports)
                 {
-                    monthsReports.Add(new JWMonthReport() 
-                    { 
+                    monthsReports.Add(new JWMonthReport()
+                    {
                         Year = ar[0].ToString(),
                         Month = ar[1].ToString(),
                         Type = ar[2].ToString(),
@@ -1007,10 +1002,10 @@ namespace MinistryReports
 
                 MenuNameLabel.Content = "Неактивные возвещатели";
 
-                
+
             }
             try
-            { 
+            {
                 JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth));
                 int startYear = dpExcel.StartMinistryYear;
                 int currentYear = DateTime.Now.Year;
@@ -1022,16 +1017,16 @@ namespace MinistryReports
                 YearNoActivityPablisherComboBox.ItemsSource = years;
 
                 ShowNoActivityPublisherButton.IsEnabled = true;
-            } 
-            catch(Exception ex)
-            { 
+            }
+            catch (Exception ex)
+            {
                 MyMessageBox.Show(ex.Message, "Ошибка");
             }
         }
 
         private async void ShowNoActivityPublisherButton_Click(object sender, RoutedEventArgs e)
         {
-            if(Int32.TryParse(YearNoActivityPablisherComboBox.Text, out int year) == false)
+            if (Int32.TryParse(YearNoActivityPablisherComboBox.Text, out int year) == false)
             {
                 MyMessageBox.Show("Укажите правильно год!", "Ошибка");
                 goto exitMethod;
@@ -1095,7 +1090,8 @@ namespace MinistryReports
                 }
                 catch (SyntaxErrorException ex) // Sheet ID Exception
                 {
-                    this.Dispatcher.Invoke(() => {
+                    this.Dispatcher.Invoke(() =>
+                    {
                         MyMessageBox.Show(ex.Message, "Ошибка");
                         this.AddNotification(this.CreateNotification("Неактивные возвещатели", ex.Message));
                     });
@@ -1130,7 +1126,7 @@ namespace MinistryReports
             InitializeTextBoxText(_userSettings);
 
         }
-        
+
 
         // Заполнение полей во вкладке настройки доступной информацией.
         private void InitializeTextBoxText(UserSettings userSettings)
@@ -1142,7 +1138,7 @@ namespace MinistryReports
 
                 TextBoxJWBookExcelFile.Text = userSettings.JWBookSettings.JWBookPuth;
                 TextBoxJWBookExcelFile.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                
+
                 // S-21
                 TextBoxPuthToUnloadingFolder.Text = userSettings.S21Settings.PuthToFolderUnlaoding;
                 TextBoxPuthToUnloadingFolder.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
@@ -1181,7 +1177,7 @@ namespace MinistryReports
             TextBox textBox = new TextBox();
             Button btn = sender as Button;
 
-            switch(btn.Name)
+            switch (btn.Name)
             {
                 case "ButtonSearchSettingFile":
                     {
@@ -1227,7 +1223,7 @@ namespace MinistryReports
 
                     System.Windows.Forms.FolderBrowserDialog browserDialog = new System.Windows.Forms.FolderBrowserDialog();
                     browserDialog.Description = "Выберите папку для хранения pdf файлов с данными возвещателей собрания.";
-                    if(browserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    if (browserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         textBox.Text = browserDialog.SelectedPath;
                         textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
@@ -1261,7 +1257,7 @@ namespace MinistryReports
             waitWindow.Owner = this;
             waitWindow.Show(); // <--- Запускаем окно.
 
-            Task.Factory.StartNew(() => 
+            Task.Factory.StartNew(() =>
             {
                 Thread.Sleep(1000);
                 this.Dispatcher.Invoke(() =>
@@ -1341,7 +1337,7 @@ namespace MinistryReports
 
                                 // Уведомляем пользователя об супешной операции.
                                 MyMessageBox.Show($"Данные сохранены!", "Успешно");
-                                if(flagEditFile) //
+                                if (flagEditFile) //
                                     this.AddNotification(this.CreateNotification("Настройки", "Изменения сохранены!"));
                                 else
                                     this.AddNotification(this.CreateNotification("Настройки", $@"Файл с настройками успешно создан! Вы можете его найти по пути: {System.IO.Path.GetPathRoot(Environment.CurrentDirectory)}Ministry Reports\Settings"));
@@ -1354,7 +1350,8 @@ namespace MinistryReports
                                 this.AddNotification(this.CreateNotification("Неизвестная ошибка", $"Message: {ex.Message} InnerException: {ex.InnerException}. Window: SettingsWindow -> Button: ButtonSaveSettingFile"));
                             }
                         }
-                        else {
+                        else
+                        {
                             waitWindow.Close();
                             MyMessageBox.Show($"Сохранение не удалось. Попробуйте еще раз. Рекомендуем проверить правильно ли заполнены все поля.", "Ошибка");
                         }
@@ -1366,13 +1363,13 @@ namespace MinistryReports
                         MyMessageBox.Show("Заполните пожалуйста все поля", "Ошибка");
                     }
                 });
-            }); 
+            });
         }
 
 
 
         #endregion
 
-       
+
     }
 }

@@ -11,7 +11,9 @@ namespace MinistryReports
 {
     public class Initialize
     {
-        private IBakcupService _bakcupService;
+        private readonly IBakcupService _bakcupService;
+        private readonly IDirectoryService _directoryService;
+
         private UserSettings _userSettings;
 
         private MainWindow _mainWindow;
@@ -22,6 +24,7 @@ namespace MinistryReports
             _mainWindow = window;
             _waitWindow = waitWindow;
 
+            _directoryService = new DirectoryService();
             _bakcupService = new BackupService(new UserSettings());
         }
 
@@ -74,7 +77,9 @@ namespace MinistryReports
             catch (System.IO.DirectoryNotFoundException)
             {
                 // Create Dirictory -- Пользователь первый раз использует программу.
-                CreateProgramDirectory();  // Создали необходимые системные директории.
+                _directoryService.CreateProgramDirectory();  // Создали необходимые системные директории.
+                _directoryService.CreateSystemFile(); // Создаём копируем файлы, которые должны быть поумолчанию.
+                
                 _waitWindow.Close();
                 _mainWindow.AddNotification(_mainWindow.CreateNotification("Системное уведомления", "Добро пожаловать! Ministry Reports это программа, которая поможет вам составлять и отправлять годовой отчёт в филиал. В это программе собраны все необходимые функции для удобного формирования годового отчета. Также вы можете отслеживать активность возвещателя, либо любого другого служителя собрания. Мы надеемся, что эта программа поможет вам формировать годовой отчет правильно и удобно. Чтобы начать пользоваться программой - настройте её."));
             }
@@ -86,16 +91,6 @@ namespace MinistryReports
             }
 
             return null;
-        }
-
-        // TODO: refact
-        public void CreateProgramDirectory()
-        {
-            var root = Path.GetPathRoot(Environment.CurrentDirectory);
-            string programFolder = "Ministry Reports";
-            Directory.CreateDirectory(Path.Combine(root, programFolder));
-            Directory.CreateDirectory(Path.Combine(root, programFolder, "Settings"));
-            Directory.CreateDirectory(Path.Combine(root, programFolder, "Reports Publishers"));
         }
     }
 }

@@ -27,10 +27,10 @@ namespace MinistryReports.Services
                 },
                 S21Settings = new S21Settings()
                 {
-                    NameTable = "reports",
+                    NameTable = ApplicationConfig.JwExcelBook.TableName,
                     PuthToExcelDbFile = Path.Combine(Path.GetPathRoot(Environment.CurrentDirectory), ApplicationConfig.FolderName, ApplicationConfig.SettingsFolder),
                     PuthToFolderUnlaoding = Path.Combine(Path.GetPathRoot(Environment.CurrentDirectory), ApplicationConfig.FolderName, ApplicationConfig.DataDir),
-                    PuthToTamplate = Path.Combine(Path.GetPathRoot(Environment.CurrentDirectory), ApplicationConfig.FolderName, ApplicationConfig.SettingsFolder)
+                    PuthToTamplate = Path.Combine(Path.GetPathRoot(Environment.CurrentDirectory), ApplicationConfig.FolderName, ApplicationConfig.SettingsFolder, ApplicationConfig.PdfTamplate)
                 }
             };
         }

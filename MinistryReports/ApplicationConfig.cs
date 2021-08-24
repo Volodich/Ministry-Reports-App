@@ -6,6 +6,14 @@
         public static string FolderName = "MinistryReports"; // название основной папки программы
         public static string SettingsFolder = "Settings"; // название папки с настройками
         public static string DataDir = "ReportsPublishers"; // папка, где лежат все файлы для работы программы
-        public static string PdfTamplate = "s21_blank.pdf"; // названия файла шаблона
+        // s21
+        public static string PdfTamplate = "s21blank.pdf"; // названия файла шаблона
+
+        public static string FontName = "TimesNewRoman.ttf"; // название шрифта, который используется
+        // excel file
+        public static class JwExcelBook
+        {
+            public static string TableName = "reports";
+        } 
     }
 }
