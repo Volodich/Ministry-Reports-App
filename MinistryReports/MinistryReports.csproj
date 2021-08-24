@@ -220,7 +220,6 @@
     <Compile Include="Services\WindowService.cs" />
     <Compile Include="ViewModels\S21InfoPublisherField.cs" />
     <Compile Include="ViewModels\UserSettings.cs" />
-    <Compile Include="Serialization\Backup.cs" />
     <Compile Include="WarningWindow.xaml.cs">
       <DependentUpon>WarningWindow.xaml</DependentUpon>
     </Compile>
@@ -271,7 +270,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="JWBook\JWBookGoogleSheetsApiKey.json" />
+    <None Include="Resources\JWBookGoogleSheetsApiKey.json" />
     <None Include="MinistryReports_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />

@@ -6,43 +6,37 @@ using MinistryReports.ViewModels;
 
 namespace MinistryReports.Services
 {
-    public interface IBakcupService
+    public interface IBackupService
     {
-        void Create(string puth);
+        void Create(UserSettings settings, string puth = null);
         UserSettings GetLoadSettings(string puth);
     }
-    public class BackupService : IBakcupService
+    public class BackupService : IBackupService
     {
         private string _puthDefault;
         private string _xmlFormatFile = "*xml";
 
         private string _rootDir = Path.GetPathRoot(Environment.CurrentDirectory);
 
-        private UserSettings _userSettings;
-
-        public BackupService(UserSettings userSettings)
+        public BackupService()
         {
-            _userSettings = userSettings;
             // Укажим шаблонную директорию для поиска файлов настройки
             _puthDefault = Path.Combine(_rootDir, ApplicationConfig.FolderName, ApplicationConfig.SettingsFolder);
         }
 
         // Возможность использовать путь "по умолчанию"
-        public void Create(string puth)
+        public void Create(UserSettings settings, string puth = null)
         {
             if (string.IsNullOrEmpty(puth))
             {
                 puth = Path.Combine(_puthDefault, "data.xml");
             }
 
-            if (_userSettings == null)
-                return;
-
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(UserSettings));
 
             using (FileStream fs = new FileStream(puth, FileMode.Create, FileAccess.ReadWrite))
             {
-                xmlSerializer.Serialize(fs, _userSettings);
+                xmlSerializer.Serialize(fs, settings);
             }
         }
 

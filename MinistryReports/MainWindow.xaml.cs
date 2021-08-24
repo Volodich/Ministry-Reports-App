@@ -5,7 +5,6 @@ using MinistryReports.Extensions;
 using MinistryReports.Models;
 using MinistryReports.Models.JWBook;
 using MinistryReports.Models.S_21;
-using MinistryReports.Serialization;
 using MinistryReports.Services;
 using MinistryReports.ViewModels;
 using System;
@@ -31,6 +30,7 @@ namespace MinistryReports
         private readonly IS21Manager _s21Manager;
         private readonly IS21Servise _s21Servise;
         private readonly IUserService _userService;
+        private readonly IBackupService _backupService;
 
         internal UserSettings _userSettings;
         internal object dataPublisher;
@@ -48,6 +48,7 @@ namespace MinistryReports
             _userSettings = _userService.GetUserSettings();
             _s21Servise = new S21Service();
             _s21Manager = new S21Manager(_userSettings.S21Settings);
+            _backupService = new BackupService();
 
             deletePublisher = new ObservableCollection<NoActivityPublisher>();
         }
@@ -1185,10 +1186,10 @@ namespace MinistryReports
                         if (fileDialog.ShowDialog() == true)
                         {
                             string filePuth = fileDialog.FileName;
-                            Backup backup = new Backup(_userSettings);
                             try
                             {
-                                if (backup.LoadBackup(out _userSettings, filePuth)) // true
+                                _userSettings = _backupService.GetLoadSettings(filePuth);
+                                if (_userSettings != null) // true
                                 {
                                     // Даём доступ использованию программы.
                                     MonthReportWindow.IsEnabled = true;
@@ -1322,9 +1323,8 @@ namespace MinistryReports
                                 _userSettings.S21Settings.PuthToExcelDbFile = TextBoxPuthToExcelFileDataPublisher.Text;
 
                                 // Сохранение в файл.
-                                Backup backup = new Backup(_userSettings);
-                                backup.CreateBackup();
-
+                                _backupService.Create(_userSettings);
+                               
                                 // Открываем доступ к использованию программы.
                                 MonthReportWindow.IsEnabled = true;
                                 S21Window.IsEnabled = true;

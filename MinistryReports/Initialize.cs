@@ -11,7 +11,7 @@ namespace MinistryReports
 {
     public class Initialize
     {
-        private readonly IBakcupService _bakcupService;
+        private readonly IBackupService _backupService;
         private readonly IDirectoryService _directoryService;
 
         private UserSettings _userSettings;
@@ -25,7 +25,7 @@ namespace MinistryReports
             _waitWindow = waitWindow;
 
             _directoryService = new DirectoryService();
-            _bakcupService = new BackupService(new UserSettings());
+            _backupService = new BackupService();
         }
 
         public async Task<UserSettings> LoadAppSettingsAsync() => await Task.Run(LoadAppSettings);
@@ -34,7 +34,7 @@ namespace MinistryReports
         {
             try
             {
-                _userSettings = _bakcupService.GetLoadSettings(null);
+                _userSettings = _backupService.GetLoadSettings(null);
                 // TODO: refactor
                 JwBookExcel excel = new JwBookExcel(_userSettings.JWBookSettings.JWBookPuth);
                 try
