@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -17,6 +13,7 @@ using MinistryReports.Controllers;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.Globalization;
 using ConsoleApp4.JWBook;
+using MinistryReports.Extensions;
 
 namespace MinistryReports
 {
@@ -139,7 +136,7 @@ namespace MinistryReports
             {
                 MainWindow mainWindow = null;
                 this.Dispatcher.Invoke(() => mainWindow = this.Owner as MainWindow);
-                JwBookExcel excel = new JwBookExcel(mainWindow.userSettings.JWBookSettings.JWBookPuth);
+                JwBookExcel excel = new JwBookExcel(mainWindow._userSettings.JWBookSettings.JWBookPuth);
                 JwBookExcel.DataPublisher dpExcel = new JwBookExcel.DataPublisher(excel);
                 if (dpExcel.IsPublisherContainsInTable(publisher.Name) == true)
                 {
@@ -156,11 +153,11 @@ namespace MinistryReports
                         this.Dispatcher.Invoke(() =>
                         {
                             dpExcel.AddPublisher(publisher.Name, pioner: CheckBoxPioner.IsChecked.Value, pastor: CheckBoxPastor.IsChecked.Value, ministryAssistant: CheckBoxMinistryHelper.IsChecked.Value);
-                            ExcelDBController.AddPublisher(publisher, mainWindow.userSettings.S21Settings);
+                            ExcelDBController.AddPublisher(publisher, mainWindow._userSettings.S21Settings);
                             waitWindow.Close();
                             MyMessageBox.Show($"Возвещатель \"{publisher.Name}\" успешно сохранён!", "Успешно!");
                             MainWindow window = this.Owner as MainWindow;
-                            window.AddNotification(MainWindow.CreateNotification("Информация о возвещателях", $"Возвещатель \"{publisher.Name}\" успешно сохранён в Google таблицы и Excel файл."));
+                            window.AddNotification(window.CreateNotification("Информация о возвещателях", $"Возвещатель \"{publisher.Name}\" успешно сохранён в Google таблицы и Excel файл."));
                         });
                     }
                     catch (InvalidOperationException)
@@ -168,7 +165,7 @@ namespace MinistryReports
                         waitWindow.Close();
                         MyMessageBox.Show($"Не удалось добавить возвещателя \"{publisher.Name}\". Проверьте настройки приложения. Возможно Вы не правильно настроили доступ к файлу excel. Или возможно у Вас открыт документ excel. Пожалуйста закройте его и повторите попытку.", "Ошибка!");
                         MainWindow window = this.Owner as MainWindow;
-                        window.AddNotification(MainWindow.CreateNotification("Информация о возвещателях", $"Не удалось добавить возвещателя \"{publisher.Name}\". Проверьте настройки приложения. Возможно Вы не правильно настроили доступ к файлу excel. Или возможно у Вас открыт документ excel. Пожалуйста закройте его и повторите попытку."));
+                        window.AddNotification(window.CreateNotification("Информация о возвещателях", $"Не удалось добавить возвещателя \"{publisher.Name}\". Проверьте настройки приложения. Возможно Вы не правильно настроили доступ к файлу excel. Или возможно у Вас открыт документ excel. Пожалуйста закройте его и повторите попытку."));
                     }
                 }
             });

@@ -74,7 +74,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>029A820967075FAE58005929E2915920B2285AB0</ManifestCertificateThumbprint>
@@ -83,7 +83,7 @@
     <ManifestKeyFile>MinistryReports_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>
@@ -187,8 +187,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApplicationConfig.cs" />
+    <Compile Include="Extensions\NotoficationExtensions.cs" />
+    <Compile Include="Initialize.cs" />
     <Compile Include="JWBook\JwBookExcel.cs" />
     <Compile Include="Models\JWBook\NoActivityPublisher.cs" />
+    <Compile Include="Models\JWBook\SheetSettings.cs" />
     <Compile Include="MyMessageBox.xaml.cs">
       <DependentUpon>MyMessageBox.xaml</DependentUpon>
     </Compile>
@@ -197,7 +201,6 @@
     </Compile>
     <Compile Include="Controllers\ExcelDBController.cs" />
     <Compile Include="Controllers\FastWorkInstrumentsWPF.cs" />
-    <Compile Include="Controllers\S21Controller.cs" />
     <Compile Include="ExcelDbPublisher\ExcelPublisher.cs" />
     <Compile Include="Models\JWBook\MonthReport.cs" />
     <Compile Include="Models\JWBook\JWBookSettings.cs" />
@@ -207,11 +210,16 @@
     <Compile Include="ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="S21\S21.cs" />
+    <Compile Include="Services\BackupService.cs" />
+    <Compile Include="Services\Excel\ExcelManager.cs" />
+    <Compile Include="Services\Excel\ExcelService.cs" />
+    <Compile Include="Services\S21\S21Manager.cs" />
+    <Compile Include="Services\S21\S21Service.cs" />
+    <Compile Include="Services\UserSettingsService.cs" />
+    <Compile Include="Services\WindowService.cs" />
     <Compile Include="ViewModels\S21InfoPublisherField.cs" />
     <Compile Include="ViewModels\UserSettings.cs" />
     <Compile Include="Serialization\Backup.cs" />
-    <Compile Include="Startup.cs" />
     <Compile Include="WarningWindow.xaml.cs">
       <DependentUpon>WarningWindow.xaml</DependentUpon>
     </Compile>
@@ -294,6 +302,7 @@
     <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DB\" />
     <Folder Include="Resources\Pdf\" />
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +318,9 @@
   <ItemGroup>
     <PackageReference Include="iTextSharp">
       <Version>5.5.13.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.EF6">
+      <Version>1.0.114</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

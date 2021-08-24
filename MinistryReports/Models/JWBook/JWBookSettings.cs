@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MinistryReports.Models
+﻿namespace MinistryReports.Models
 {
     public class JWBookSettings
     {
-        public string ApplicationName { get => "Ministry Reports"; }
+        public string ApplicationName => "Ministry Reports";
 
         public string SpreadsheetId { get; set; }
 

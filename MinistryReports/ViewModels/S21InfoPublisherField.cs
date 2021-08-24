@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MinistryReports.ViewModels
 {
-    class S21InfoPublisherField
+    public class S21InfoPublisherField
     {
         public S21InfoPublisherField()
         {
