@@ -80,13 +80,14 @@ namespace MinistryReports
                     MonthReportWindow.IsEnabled = true;
                     S21Window.IsEnabled = true;
                     PublishersWindow.IsEnabled = true;
-                    // Пока не реализовано нормально.
-                    ArchiveMinistryWindow.IsEnabled = false;
-                    ArchiveMinistryWindow.Visibility = Visibility.Hidden;
 
                     NoActivityWindow.IsEnabled = false;
                     NoActivityWindow.Visibility = Visibility.Hidden;
                 }
+
+                ArchiveMinistryWindow.IsEnabled = false;
+                ArchiveMinistryWindow.Visibility = Visibility.Hidden;
+
                 waitWindow.Close();
             }
             else
@@ -114,14 +115,15 @@ namespace MinistryReports
         #region HomePage
         private void HamburgerMenuItemHomePage(object sender, MouseButtonEventArgs e)
         {
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(MonthReport);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(S21);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(PublisherInfo);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(Archive);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(NoActivity);
+            MonthReport.Hidden();
+            S21.Hidden();
+            PublisherInfo.Hidden();
+            Archive.Hidden();
+            SettingWindow.Hidden();
+            NoActivity.Hidden();
 
-            FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(HomeWindow);
+            HomeWindow.Visible();
+
             MenuNameLabel.Content = "Главная";
         }
 
@@ -132,17 +134,15 @@ namespace MinistryReports
         {
             // Visible & Enabled
             {
-                FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(MonthReport);
+                MonthReport.Visible();
 
                 MenuNameLabel.Content = "Месячный отчёт";
-
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindowAsync(HomeWindow);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindowAsync(S21);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindowAsync(PublisherInfo);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindowAsync(Archive);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindowAsync(NoActivity);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
-
+                HomeWindow.Hidden();
+                S21.Hidden();
+                PublisherInfo.Hidden();
+                Archive.Hidden();
+                NoActivity.Hidden();
+                SettingWindow.Hidden();
             }
             try
             {
@@ -445,14 +445,14 @@ namespace MinistryReports
         {
             // Visible & Enabled
             {
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(HomeWindow);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(MonthReport);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(PublisherInfo);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(Archive);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(NoActivity);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
+                HomeWindow.Hidden();
+                MonthReport.Hidden();
+                PublisherInfo.Hidden();
+                Archive.Hidden();
+                NoActivity.Hidden();
+                SettingWindow.Hidden();
 
-                FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(S21);
+                S21.Visible();
             }
 
             MenuNameLabel.Content = "Возвещатели";
@@ -642,16 +642,16 @@ namespace MinistryReports
         {
             // Visible & Enabled
             {
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(HomeWindow);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(S21);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(MonthReport);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(Archive);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(NoActivity);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
+                HomeWindow.Hidden();
+                S21.Hidden();
+                MonthReport.Hidden();
+                Archive.Hidden();
+                NoActivity.Hidden();
+                SettingWindow.Hidden();
 
                 MenuNameLabel.Content = "Информация о возвещателях";
 
-                FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(PublisherInfo);
+                PublisherInfo.Visible();
             }
 
             ProgressWindow waitWindow = new ProgressWindow();
@@ -820,15 +820,14 @@ namespace MinistryReports
         {
             // Visible & Enabled
             {
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(HomeWindow);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(S21);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(PublisherInfo);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(MonthReport);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(NoActivity);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
+                HomeWindow.Hidden();
+                S21.Hidden();
+                PublisherInfo.Hidden();
+                MonthReport.Hidden();
+                NoActivity.Hidden();
+                SettingWindow.Hidden();
 
-                // FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(Archive);
-
+                // HACK: активировать, когда будет реализация архивации Archive.Visible();
                 MenuNameLabel.Content = "Архив";
             }
             try
@@ -957,14 +956,14 @@ namespace MinistryReports
         private void HamburgerMenuItemNoActivityPage(object sender, MouseButtonEventArgs e)
         {
             {
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(HomeWindow);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(S21);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(PublisherInfo);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(Archive);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(MonthReport);
-                FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(SettingWindow);
+                HomeWindow.Hidden();
+                S21.Hidden();
+                PublisherInfo.Hidden();
+                Archive.Hidden();
+                MonthReport.Hidden();
+                SettingWindow.Hidden();
 
-                // FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(NoActivity);
+                // HACK: снять комментарии, когда будет реализовано. NoActivity.Visible();
 
                 MenuNameLabel.Content = "Неактивные возвещатели";
 
@@ -1078,19 +1077,18 @@ namespace MinistryReports
         #region Settings
         private void SettingsWindow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(HomeWindow);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(S21);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(PublisherInfo);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(MonthReport);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(NoActivity);
-            FastWorkInstrumentsWPF.HamburgerMenu.NoEnabledGridWindow(Archive);
+            HomeWindow.Hidden();
+            S21.Hidden();
+            PublisherInfo.Hidden();
+            MonthReport.Hidden();
+            NoActivity.Hidden();
+            Archive.Hidden();
 
-            FastWorkInstrumentsWPF.HamburgerMenu.EnabledGridWindow(SettingWindow);
+            SettingWindow.Visible();
 
             MenuNameLabel.Content = "Настройки";
 
             InitializeTextBoxText(_userSettings);
-
         }
 
 

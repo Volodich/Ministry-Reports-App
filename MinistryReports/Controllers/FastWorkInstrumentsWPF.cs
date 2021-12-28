@@ -26,31 +26,6 @@ namespace MinistryReports.Controllers
                 return column;
             }
         }
-        public class HamburgerMenu
-        {
-            public static void EnabledGridWindow(Grid grid)
-            { 
-                    if (grid != null)
-                    {
-                        grid.Visibility = Visibility.Visible;
-                        grid.IsEnabled = true;
-                    }
-            }
-
-            public static void NoEnabledGridWindow(Grid grid)
-            {
-                if (grid != null)
-                {
-                    grid.Visibility = Visibility.Hidden;
-                    grid.IsEnabled = false;
-                }   
-            }
-
-            public async static void NoEnabledGridWindowAsync(Grid grid)
-            {
-                await Task.Run(() => App.Current.Dispatcher.Invoke(()=> NoEnabledGridWindow(grid)));
-            }
-        }
 
         public class RichTextBox
         {

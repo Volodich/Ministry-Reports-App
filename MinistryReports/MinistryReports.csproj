@@ -189,6 +189,7 @@
     </ApplicationDefinition>
     <Compile Include="ApplicationConfig.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\GridExtensions.cs" />
     <Compile Include="Extensions\NotoficationExtensions.cs" />
     <Compile Include="Initialize.cs" />
     <Compile Include="JWBook\JwBookExcel.cs" />
