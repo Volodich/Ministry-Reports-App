@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.IO; // работа с файловой системой
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,13 +19,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using SysWindow = System.Windows.Window;
 
 namespace MinistryReports
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : System.Windows.Window
+    public partial class MainWindow : SysWindow
     {
         private readonly IS21Manager _s21Manager;
         private readonly IS21Servise _s21Servise;
@@ -815,6 +816,266 @@ namespace MinistryReports
 
         #endregion
 
+        #region Settings
+        private void SettingsWindow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            HomeWindow.Hidden();
+            S21.Hidden();
+            PublisherInfo.Hidden();
+            MonthReport.Hidden();
+            NoActivity.Hidden();
+            Archive.Hidden();
+
+            SettingWindow.Visible();
+
+            MenuNameLabel.Content = "Настройки";
+
+            InitializeTextBoxText(_userSettings);
+        }
+
+
+        // Заполнение полей во вкладке настройки доступной информацией.
+        private void InitializeTextBoxText(UserSettings userSettings)
+        {
+            if (userSettings != null) // Если доступен файл настроек.
+            {
+                TextBoxUserName.Text = userSettings.UserName;
+                TextBoxUserName.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+
+                TextBoxJWBookExcelFile.Text = userSettings.JWBookSettings.JWBookPath;
+                TextBoxJWBookExcelFile.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+
+                // S-21
+                TextBoxPuthToUnloadingFolder.Text = userSettings.S21Settings.PuthToFolderUnlaoding;
+                TextBoxPuthToUnloadingFolder.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+
+                TextBoxPuthToPdfTamplateS21.Text = userSettings.S21Settings.PuthToTamplate;
+                TextBoxPuthToPdfTamplateS21.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+
+                TextBoxPuthToExcelFileDataPublisher.Text = userSettings.S21Settings.PuthToExcelDbFile;
+                TextBoxPuthToExcelFileDataPublisher.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            }
+        }
+
+        // Сработает, если пользователь изменит данные настроек.
+        private void TextBoxTextChangedHandler(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (_userSettings != null)
+            {
+                ButtonReSavingSetting.IsEnabled = true;
+                SaveSettings.IsEnabled = false;
+            }
+            textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+        }
+
+        private void ButtonReSavingSetting_Click(object sender, RoutedEventArgs e)
+        {
+            SaveSettings_Click(sender, e);
+        }
+
+        // Обработчик события - поиск файла или указание директории.
+        private void ButtonClickOpenFileDialog(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.InitialDirectory = System.IO.Path.GetPathRoot(Environment.CurrentDirectory);
+
+            TextBox textBox = new TextBox();
+            Button btn = sender as Button;
+
+            switch (btn.Name)
+            {
+                case "ButtonSearchSettingFile":
+                    {
+                        fileDialog.Filter = "XML files (*.xml) | *.xml;";
+                        if (fileDialog.ShowDialog() == true)
+                        {
+                            string filePuth = fileDialog.FileName;
+                            try
+                            {
+                                _userSettings = _backupService.GetLoadSettings(filePuth);
+                                if (_userSettings != null) // true
+                                {
+                                    // Даём доступ использованию программы.
+                                    MonthReportWindow.IsEnabled = true;
+                                    S21Window.IsEnabled = true;
+                                    PublishersWindow.IsEnabled = true;
+                                    ArchiveMinistryWindow.IsEnabled = true;
+                                    NoActivityWindow.IsEnabled = true;
+
+                                    InitializeTextBoxText(_userSettings);
+                                }
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+
+                                MyMessageBox.Show("Не удаеться правильно прочитать файл XML. Неккоректроне содержимое.", "Ошибка");
+                                this.AddNotification(this.CreateNotification("Cистемное уведомление", "Не удаеться правильно прочитать файл XML. Неккоректроне содержимое."));
+                            }
+                            catch (Exception ex)
+                            {
+                                MyMessageBox.Show($"Неизвестная ошибка. Обратитесь к администратору.", "Ошибка");
+                                this.AddNotification(this.CreateNotification("Неизвестная ошибка", $"Message: {ex.Message} InnerException: {ex.InnerException}. Window: SettingsWindow -> Button: ButtonSearchSettingFile"));
+                            }
+                        }
+                    }
+                    goto exitLabel;
+                case "ButtonSearchJWBookFile":
+                    textBox = TextBoxJWBookExcelFile;
+                    fileDialog.Filter = "Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx;";
+                    break;
+                case "ButtonSearchFolderToUnload":
+                    textBox = TextBoxPuthToUnloadingFolder;
+
+                    System.Windows.Forms.FolderBrowserDialog browserDialog = new System.Windows.Forms.FolderBrowserDialog();
+                    browserDialog.Description = "Выберите папку для хранения pdf файлов с данными возвещателей собрания.";
+                    if (browserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        textBox.Text = browserDialog.SelectedPath;
+                        textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                    }
+                    goto exitLabel;
+                case "ButtonSearchPdfS21Blank":
+                    textBox = TextBoxPuthToPdfTamplateS21;
+                    fileDialog.Filter = "PDF files (*.pdf) | *.pdf;";
+                    break;
+                case "ButtonSearchExcelFile":
+                    textBox = TextBoxPuthToExcelFileDataPublisher;
+                    fileDialog.Filter = "Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx;";
+                    break;
+            }
+            if (fileDialog.ShowDialog() == true)
+            {
+                textBox.Text = fileDialog.FileName;
+                textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            }
+        exitLabel:;
+        }
+
+        // Обработчик события - кнопка сохранить настройки.
+        private void SaveSettings_Click(object sender, RoutedEventArgs e)
+        {
+            ProgressWindow waitWindow = new ProgressWindow();
+            waitWindow.ProgressBar.IsIndeterminate = true;
+            waitWindow.ProgressBar.Orientation = System.Windows.Controls.Orientation.Horizontal;
+            waitWindow.LabelInformation.Content = String.Empty;
+            waitWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            waitWindow.Owner = this;
+            waitWindow.Show(); // <--- Запускаем окно.
+
+            Task.Factory.StartNew(() =>
+            {
+                Thread.Sleep(1000);
+                this.Dispatcher.Invoke(() =>
+                {
+                    if (TextBoxUserName.Text != null &&
+                        // JWBook
+                        TextBoxJWBookExcelFile.Text != "Путь к файлу" &&
+                        // S-21
+                        TextBoxPuthToUnloadingFolder.Text != "Путь к папке" &&
+                        TextBoxPuthToPdfTamplateS21.Text != "Путь к месту хранения бланка" &&
+                        TextBoxPuthToExcelFileDataPublisher.Text != "Путь к месту хранения файла excel")
+                    {
+                        bool flagFilePuth = true;
+                        // проверка пути к файлам.
+                        if (!TextBoxJWBookExcelFile.Text.Contains(@"\"))
+                        {
+                            waitWindow.Close();
+                            MyMessageBox.Show("Ошибка - не удаёться найти файл по указанному пути", "Ошибка");
+                            TextBoxJWBookExcelFile.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                            flagFilePuth = false;
+                        }
+                        if (!TextBoxPuthToUnloadingFolder.Text.Contains(@"\"))
+                        {
+                            waitWindow.Close();
+                            MyMessageBox.Show("Ошибка - не удаёться определить путь", "Ошибка");
+                            TextBoxPuthToUnloadingFolder.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                            flagFilePuth = false;
+                        }
+                        if (!TextBoxPuthToExcelFileDataPublisher.Text.Contains(@"\"))
+                        {
+                            waitWindow.Close();
+                            MyMessageBox.Show("Ошибка - не удаёться найти файл по указанному пути.", "Ошибка");
+                            TextBoxPuthToExcelFileDataPublisher.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                            flagFilePuth = false;
+                        }
+                        if (!TextBoxPuthToPdfTamplateS21.Text.Contains(@"\"))
+                        {
+                            waitWindow.Close();
+                            MyMessageBox.Show("Ошибка - не удаёться найти файл по указанному пути.", "Ошибка");
+                            TextBoxPuthToPdfTamplateS21.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                            flagFilePuth = false;
+                        }
+
+                        // если успешно заполнены поля.
+                        if (flagFilePuth == true)
+                        {
+                            bool flagEditFile = true;
+                            if (_userSettings == null) // Первый раз сохраняем настройки.
+                            {
+                                _userSettings = new UserSettings() { JWBookSettings = new Models.JWBookSettings(), S21Settings = new S21Settings() };
+                                flagEditFile = false;
+                            }
+                            try
+                            {
+                                // заносим данные в экземпляр класса UserSettings
+                                _userSettings.UserName = TextBoxUserName.Text;
+                                //JwBookExcel
+                                _userSettings.JWBookSettings.JWBookPath = TextBoxJWBookExcelFile.Text;
+                                // S-21
+                                _userSettings.S21Settings.PuthToFolderUnlaoding = TextBoxPuthToUnloadingFolder.Text;
+                                _userSettings.S21Settings.PuthToTamplate = TextBoxPuthToPdfTamplateS21.Text;
+                                _userSettings.S21Settings.PuthToExcelDbFile = TextBoxPuthToExcelFileDataPublisher.Text;
+
+                                // Сохранение в файл.
+                                _backupService.Create(_userSettings);
+
+                                // Открываем доступ к использованию программы.
+                                MonthReportWindow.IsEnabled = true;
+                                S21Window.IsEnabled = true;
+                                PublishersWindow.IsEnabled = true;
+                                ArchiveMinistryWindow.IsEnabled = true;
+                                NoActivityWindow.IsEnabled = true;
+
+                                // Закрываем окно ожидания.
+                                waitWindow.Close();
+
+                                // Уведомляем пользователя об супешной операции.
+                                MyMessageBox.Show($"Данные сохранены!", "Успешно");
+                                if (flagEditFile) //
+                                    this.AddNotification(this.CreateNotification("Настройки", "Изменения сохранены!"));
+                                else
+                                    this.AddNotification(this.CreateNotification("Настройки", $@"Файл с настройками успешно создан! Вы можете его найти по пути: {System.IO.Path.GetPathRoot(Environment.CurrentDirectory)}Ministry Reports\Settings"));
+
+                            }
+                            catch (Exception ex) // если произойдёт непредвиденная ошибка при заполнении полей пользователем.
+                            {
+                                waitWindow.Close();
+                                MyMessageBox.Show($"Неизвестная ошибка. Обратитесь к администратору.", "Ошибка");
+                                this.AddNotification(this.CreateNotification("Неизвестная ошибка", $"Message: {ex.Message} InnerException: {ex.InnerException}. Window: SettingsWindow -> Button: ButtonSaveSettingFile"));
+                            }
+                        }
+                        else
+                        {
+                            waitWindow.Close();
+                            MyMessageBox.Show($"Сохранение не удалось. Попробуйте еще раз. Рекомендуем проверить правильно ли заполнены все поля.", "Ошибка");
+                        }
+                    }
+
+                    else
+                    {
+                        waitWindow.Close();
+                        MyMessageBox.Show("Заполните пожалуйста все поля", "Ошибка");
+                    }
+                });
+            });
+        }
+
+
+
+        #endregion
+
+        // feature tools
         #region Archive Page
         private void HamburgerMenuItemArchivePage(object sender, MouseButtonEventArgs e)
         {
@@ -1074,264 +1335,7 @@ namespace MinistryReports
 
         #endregion
 
-        #region Settings
-        private void SettingsWindow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            HomeWindow.Hidden();
-            S21.Hidden();
-            PublisherInfo.Hidden();
-            MonthReport.Hidden();
-            NoActivity.Hidden();
-            Archive.Hidden();
-
-            SettingWindow.Visible();
-
-            MenuNameLabel.Content = "Настройки";
-
-            InitializeTextBoxText(_userSettings);
-        }
-
-
-        // Заполнение полей во вкладке настройки доступной информацией.
-        private void InitializeTextBoxText(UserSettings userSettings)
-        {
-            if (userSettings != null) // Если доступен файл настроек.
-            {
-                TextBoxUserName.Text = userSettings.UserName;
-                TextBoxUserName.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-
-                TextBoxJWBookExcelFile.Text = userSettings.JWBookSettings.JWBookPath;
-                TextBoxJWBookExcelFile.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-
-                // S-21
-                TextBoxPuthToUnloadingFolder.Text = userSettings.S21Settings.PuthToFolderUnlaoding;
-                TextBoxPuthToUnloadingFolder.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-
-                TextBoxPuthToPdfTamplateS21.Text = userSettings.S21Settings.PuthToTamplate;
-                TextBoxPuthToPdfTamplateS21.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-
-                TextBoxPuthToExcelFileDataPublisher.Text = userSettings.S21Settings.PuthToExcelDbFile;
-                TextBoxPuthToExcelFileDataPublisher.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            }
-        }
-
-        // Сработает, если пользователь изменит данные настроек.
-        private void TextBoxTextChangedHandler(object sender, TextChangedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            if (_userSettings != null)
-            {
-                ButtonReSavingSetting.IsEnabled = true;
-                SaveSettings.IsEnabled = false;
-            }
-            textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-        }
-
-        private void ButtonReSavingSetting_Click(object sender, RoutedEventArgs e)
-        {
-            SaveSettings_Click(sender, e);
-        }
-
-        // Обработчик события - поиск файла или указание директории.
-        private void ButtonClickOpenFileDialog(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.InitialDirectory = System.IO.Path.GetPathRoot(Environment.CurrentDirectory);
-
-            TextBox textBox = new TextBox();
-            Button btn = sender as Button;
-
-            switch (btn.Name)
-            {
-                case "ButtonSearchSettingFile":
-                    {
-                        fileDialog.Filter = "XML files (*.xml) | *.xml;";
-                        if (fileDialog.ShowDialog() == true)
-                        {
-                            string filePuth = fileDialog.FileName;
-                            try
-                            {
-                                _userSettings = _backupService.GetLoadSettings(filePuth);
-                                if (_userSettings != null) // true
-                                {
-                                    // Даём доступ использованию программы.
-                                    MonthReportWindow.IsEnabled = true;
-                                    S21Window.IsEnabled = true;
-                                    PublishersWindow.IsEnabled = true;
-                                    ArchiveMinistryWindow.IsEnabled = true;
-                                    NoActivityWindow.IsEnabled = true;
-
-                                    InitializeTextBoxText(_userSettings);
-                                }
-                            }
-                            catch (InvalidOperationException ex)
-                            {
-
-                                MyMessageBox.Show("Не удаеться правильно прочитать файл XML. Неккоректроне содержимое.", "Ошибка");
-                                this.AddNotification(this.CreateNotification("Cистемное уведомление", "Не удаеться правильно прочитать файл XML. Неккоректроне содержимое."));
-                            }
-                            catch (Exception ex)
-                            {
-                                MyMessageBox.Show($"Неизвестная ошибка. Обратитесь к администратору.", "Ошибка");
-                                this.AddNotification(this.CreateNotification("Неизвестная ошибка", $"Message: {ex.Message} InnerException: {ex.InnerException}. Window: SettingsWindow -> Button: ButtonSearchSettingFile"));
-                            }
-                        }
-                    }
-                    goto exitLabel;
-                case "ButtonSearchJWBookFile":
-                    textBox = TextBoxJWBookExcelFile;
-                    fileDialog.Filter = "Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx;";
-                    break;
-                case "ButtonSearchFolderToUnload":
-                    textBox = TextBoxPuthToUnloadingFolder;
-
-                    System.Windows.Forms.FolderBrowserDialog browserDialog = new System.Windows.Forms.FolderBrowserDialog();
-                    browserDialog.Description = "Выберите папку для хранения pdf файлов с данными возвещателей собрания.";
-                    if (browserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        textBox.Text = browserDialog.SelectedPath;
-                        textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                    }
-                    goto exitLabel;
-                case "ButtonSearchPdfS21Blank":
-                    textBox = TextBoxPuthToPdfTamplateS21;
-                    fileDialog.Filter = "PDF files (*.pdf) | *.pdf;";
-                    break;
-                case "ButtonSearchExcelFile":
-                    textBox = TextBoxPuthToExcelFileDataPublisher;
-                    fileDialog.Filter = "Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx;";
-                    break;
-            }
-            if (fileDialog.ShowDialog() == true)
-            {
-                textBox.Text = fileDialog.FileName;
-                textBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            }
-        exitLabel:;
-        }
-
-        // Обработчик события - кнопка сохранить настройки.
-        private void SaveSettings_Click(object sender, RoutedEventArgs e)
-        {
-            ProgressWindow waitWindow = new ProgressWindow();
-            waitWindow.ProgressBar.IsIndeterminate = true;
-            waitWindow.ProgressBar.Orientation = System.Windows.Controls.Orientation.Horizontal;
-            waitWindow.LabelInformation.Content = String.Empty;
-            waitWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            waitWindow.Owner = this;
-            waitWindow.Show(); // <--- Запускаем окно.
-
-            Task.Factory.StartNew(() =>
-            {
-                Thread.Sleep(1000);
-                this.Dispatcher.Invoke(() =>
-                {
-                    if (TextBoxUserName.Text != null &&
-                        // JWBook
-                        TextBoxJWBookExcelFile.Text != "Путь к файлу" &&
-                        // S-21
-                        TextBoxPuthToUnloadingFolder.Text != "Путь к папке" &&
-                        TextBoxPuthToPdfTamplateS21.Text != "Путь к месту хранения бланка" &&
-                        TextBoxPuthToExcelFileDataPublisher.Text != "Путь к месту хранения файла excel")
-                    {
-                        bool flagFilePuth = true;
-                        // проверка пути к файлам.
-                        if (!TextBoxJWBookExcelFile.Text.Contains(@"\"))
-                        {
-                            waitWindow.Close();
-                            MyMessageBox.Show("Ошибка - не удаёться найти файл по указанному пути", "Ошибка");
-                            TextBoxJWBookExcelFile.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                            flagFilePuth = false;
-                        }
-                        if (!TextBoxPuthToUnloadingFolder.Text.Contains(@"\"))
-                        {
-                            waitWindow.Close();
-                            MyMessageBox.Show("Ошибка - не удаёться определить путь", "Ошибка");
-                            TextBoxPuthToUnloadingFolder.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                            flagFilePuth = false;
-                        }
-                        if (!TextBoxPuthToExcelFileDataPublisher.Text.Contains(@"\"))
-                        {
-                            waitWindow.Close();
-                            MyMessageBox.Show("Ошибка - не удаёться найти файл по указанному пути.", "Ошибка");
-                            TextBoxPuthToExcelFileDataPublisher.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                            flagFilePuth = false;
-                        }
-                        if (!TextBoxPuthToPdfTamplateS21.Text.Contains(@"\"))
-                        {
-                            waitWindow.Close();
-                            MyMessageBox.Show("Ошибка - не удаёться найти файл по указанному пути.", "Ошибка");
-                            TextBoxPuthToPdfTamplateS21.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                            flagFilePuth = false;
-                        }
-
-                        // если успешно заполнены поля.
-                        if (flagFilePuth == true)
-                        {
-                            bool flagEditFile = true;
-                            if (_userSettings == null) // Первый раз сохраняем настройки.
-                            {
-                                _userSettings = new UserSettings() { JWBookSettings = new Models.JWBookSettings(), S21Settings = new S21Settings() };
-                                flagEditFile = false;
-                            }
-                            try
-                            {
-                                // заносим данные в экземпляр класса UserSettings
-                                _userSettings.UserName = TextBoxUserName.Text;
-                                //JwBookExcel
-                                _userSettings.JWBookSettings.JWBookPath = TextBoxJWBookExcelFile.Text;
-                                // S-21
-                                _userSettings.S21Settings.PuthToFolderUnlaoding = TextBoxPuthToUnloadingFolder.Text;
-                                _userSettings.S21Settings.PuthToTamplate = TextBoxPuthToPdfTamplateS21.Text;
-                                _userSettings.S21Settings.PuthToExcelDbFile = TextBoxPuthToExcelFileDataPublisher.Text;
-
-                                // Сохранение в файл.
-                                _backupService.Create(_userSettings);
-
-                                // Открываем доступ к использованию программы.
-                                MonthReportWindow.IsEnabled = true;
-                                S21Window.IsEnabled = true;
-                                PublishersWindow.IsEnabled = true;
-                                ArchiveMinistryWindow.IsEnabled = true;
-                                NoActivityWindow.IsEnabled = true;
-
-                                // Закрываем окно ожидания.
-                                waitWindow.Close();
-
-                                // Уведомляем пользователя об супешной операции.
-                                MyMessageBox.Show($"Данные сохранены!", "Успешно");
-                                if (flagEditFile) //
-                                    this.AddNotification(this.CreateNotification("Настройки", "Изменения сохранены!"));
-                                else
-                                    this.AddNotification(this.CreateNotification("Настройки", $@"Файл с настройками успешно создан! Вы можете его найти по пути: {System.IO.Path.GetPathRoot(Environment.CurrentDirectory)}Ministry Reports\Settings"));
-
-                            }
-                            catch (Exception ex) // если произойдёт непредвиденная ошибка при заполнении полей пользователем.
-                            {
-                                waitWindow.Close();
-                                MyMessageBox.Show($"Неизвестная ошибка. Обратитесь к администратору.", "Ошибка");
-                                this.AddNotification(this.CreateNotification("Неизвестная ошибка", $"Message: {ex.Message} InnerException: {ex.InnerException}. Window: SettingsWindow -> Button: ButtonSaveSettingFile"));
-                            }
-                        }
-                        else
-                        {
-                            waitWindow.Close();
-                            MyMessageBox.Show($"Сохранение не удалось. Попробуйте еще раз. Рекомендуем проверить правильно ли заполнены все поля.", "Ошибка");
-                        }
-                    }
-
-                    else
-                    {
-                        waitWindow.Close();
-                        MyMessageBox.Show("Заполните пожалуйста все поля", "Ошибка");
-                    }
-                });
-            });
-        }
-
-
-
-        #endregion
+       
 
 
     }
