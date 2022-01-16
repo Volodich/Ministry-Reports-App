@@ -70,9 +70,9 @@
                 <ComboBox x:Name="ComboBoxMonth" Grid.Column="0" Width="Auto" IsEditable="True" TextBlock.FontFamily="PT Sans"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Месяц" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="16,6,0,6"/>
                 <ComboBox x:Name="ComboBoxYears"  Grid.Column="2"  IsEditable="True" TextBlock.FontFamily="PT Sans"  TextBlock.Foreground="Black" VerticalContentAlignment="Center" Text="Год" SelectionChanged="ComboboxSelected" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#FFFFFFFF" Padding="16,6,0,6" />
                 <Button x:Name="GetMonthReportButton"  Height="Auto" Click="GetMonthReportButtonClick" IsEnabled="False" Content="Посчитать" TextBlock.FontFamily="PT Sans"  Grid.Column="4" Background="#FF5C3C86" BorderBrush="#FF5C3C86" Padding="14,4"/>
-                <Button x:Name="SaveMonthReportButton" Height="Auto" Click="SaveMonthReportButtonClick" IsEnabled="False" Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF5C3C86" BorderBrush="#FF5C3C86">
+                <!--Button x:Name="SaveMonthReportButton" Height="Auto" Click="SaveMonthReportButtonClick" IsEnabled="False" Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF5C3C86" BorderBrush="#FF5C3C86">
                     <Image Source="Resources/SaveIcon.png"/>
-                </Button>
+                </-->
             </Grid>
             <GridSplitter  Grid.Row="2" ShowsPreview="False"  Grid.Column="1"  Height="3" ResizeBehavior="BasedOnAlignment" ResizeDirection="Rows"
                     HorizontalAlignment="Stretch" VerticalAlignment="Center"  Background="#FFF9F9F9"/>

@@ -176,7 +176,7 @@ namespace MinistryReports
 
         private async void GetMonthReportButtonClick(object sender, RoutedEventArgs e)
         {
-            SaveMonthReportButton.IsEnabled = false;
+            // SaveMonthReportButton.IsEnabled = false; // TODO: make visibly after create save report logic.
 
             string month = ComboBoxMonth.Text;
             string year = ComboBoxYears.Text;
@@ -289,7 +289,7 @@ namespace MinistryReports
                             });
                         }
                         this.Dispatcher.Invoke(() => this.AddNotification(this.CreateNotification("Месячный отчёт", $"Количество активных возвещателей на {month} {year} год -- {dataPublisher.CountActivePublishers()}.")));
-                        this.Dispatcher.Invoke(() => SaveMonthReportButton.IsEnabled = true);
+                        // this.Dispatcher.Invoke(() => SaveMonthReportButton.IsEnabled = true); TODO: make visibly after create save report logic.
                     }
                     catch (System.ArgumentOutOfRangeException ex) // Если произошла ошибка чтения данных с таблицы.  Графа суммирования данных отчёта пустая.
                     {
@@ -536,9 +536,6 @@ namespace MinistryReports
             string secondYear = ComboBoxYearOld.Text;
             string publisherName;
 
-
-
-
             if (!_s21Servise.ExistTamplateFile)
             {
                 MyMessageBox.Show("Не найден бланк S21! Проверьте путь к файлу указанный в настройках.", "Ошибка");
@@ -556,8 +553,9 @@ namespace MinistryReports
             {
                 TextBoxPuthToFolderUnlaoding.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                 MyMessageBox.Show("Укажите папку, в которой создадутся бланки.", "Ошибка");
-                goto Exit;
+                return;
             }
+
             this.Dispatcher.Invoke(() =>
             {
                 puthFolder = TextBoxPuthToFolderUnlaoding.Text;
@@ -571,7 +569,7 @@ namespace MinistryReports
             progressWindow.Show(); // <--- Запускаем окно.
 
             List<string> publisherNotFound = new List<string>();
-            bool flagPublisherNotFound = false; // указывает - обнаружены ли ошибки. (В данном случае - те возвещатели - чби имена не совпадают.
+            bool flagPublisherNotFound = false; // указывает - обнаружены ли ошибки. (В данном случае - те возвещатели - чьи имена не совпадают.
             try
             {
                 for (int i = 0; i < publisherInfoS21FieldFormat.Count(); i++)
@@ -583,24 +581,26 @@ namespace MinistryReports
                         var secondYearDataMinistry = dataMinistryPublisher.GetYearReportsPublisher(publisherName, secondYear);
                         var firstConvertDataMinistry = _s21Manager.CreateMinistryDataPublisherToStringFormat(firstYearDataMinistry, firstYear);
                         var secondConvertDataMinistry = _s21Manager.CreateMinistryDataPublisherToStringFormat(secondYearDataMinistry, secondYear);
-                        _s21Manager.CreateDocument(_s21Manager.GetPublisherInfo(publisherInfoS21FieldFormat[i]),
+                        var createDocument = _s21Manager.CreateDocumentAsync(_s21Manager.GetPublisherInfo(publisherInfoS21FieldFormat[i]),
                                                                 firstConvertDataMinistry,
                                                                 secondConvertDataMinistry,
                                                                 puthFolder);
                         this.Dispatcher.Invoke(() => progressWindow.LabelInformation.Content = $"{i}/{publisherInfoS21FieldFormat.Count} -- {publisherName}");
                         this.Dispatcher.Invoke(() => progressWindow.ProgressBar.Value++);
+
+                        await createDocument;
                     }
                     catch (FileNotFoundException ex)
                     {
                         flagPublisherNotFound = true;
                         publisherNotFound.Add(publisherName);
-                        continue;
                     }
                     catch (System.IO.IOException ex)
                     {
                         throw new Exception($"Не удалось найти файл Times New Roman.ttf. Пожалуйста переместите файл в папку {System.IO.Path.Combine(System.IO.Path.GetPathRoot(Environment.CurrentDirectory), "Ministry Reports", "Settings")}.");
                     }
                 }
+
                 this.Dispatcher.Invoke(() => progressWindow.Close());
                 MyMessageBox.Show($"Бланки S-21 успешно заполнены!", "Возвещатели");
                 this.AddNotification(this.CreateNotification("Возвещатели", $"Бланки S-21 успешно заполнены! Всего создано {publisherInfoS21FieldFormat.Count - publisherNotFound.Count} бланков. Что бы просмотреть - перейдите - {puthFolder}"));
@@ -1287,7 +1287,7 @@ namespace MinistryReports
 
                                 // Сохранение в файл.
                                 _backupService.Create(_userSettings);
-                               
+
                                 // Открываем доступ к использованию программы.
                                 MonthReportWindow.IsEnabled = true;
                                 S21Window.IsEnabled = true;

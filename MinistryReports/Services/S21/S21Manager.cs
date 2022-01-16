@@ -12,10 +12,16 @@ namespace MinistryReports.Services
     public interface IS21Manager
     {
         IEnumerable<S21InfoPublisherField> GetS21InfoPublisherFields(S21Settings settings);
+
         string GetPublisherName(S21InfoPublisherField publisherInfo);
+
         string[] GetPublisherInfo(S21InfoPublisherField publisherInfo);
+
         IEnumerable<string> CreateMinistryDataPublisherToStringFormat(object dataYear, string year);
+
         void CreateDocument(object Name, IEnumerable<string> dataLast, IEnumerable<string> dataNow, string puthCreate);
+
+        Task CreateDocumentAsync(object Name, IEnumerable<string> dataLast, IEnumerable<string> dataNow, string puthCreate);
     }
 
     public class S21Manager : IS21Manager
@@ -31,9 +37,9 @@ namespace MinistryReports.Services
         {
             ExcelPublisher.ExcelPublisher publisherEx = new MinistryReports.ExcelPublisher.ExcelPublisher(settings);
 
-            publisherEx.GetPublishers(publisherEx.publishersWorksheet);
+            var publishers = publisherEx.GetPublishers(publisherEx.publishersWorksheet);
 
-            return _s21Servise.GenerateInfoPublishers(null);
+            return _s21Servise.GenerateInfoPublishers(publishers);
         }
 
         public string GetPublisherName(S21InfoPublisherField publisherInfo)
@@ -57,6 +63,10 @@ namespace MinistryReports.Services
             _s21Servise.SetFieldPdf(Name, dataNow, dataLast);
         }
 
+        public Task CreateDocumentAsync(object Name, IEnumerable<string> dataLast, IEnumerable<string> dataNow, string puthCreate)
+        {
+            return Task.Run(() => _s21Servise.SetFieldPdf(Name, dataNow, dataLast, puthCreate));
+        }
     }
 
 }

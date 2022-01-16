@@ -26,7 +26,13 @@ namespace MinistryReports.Services
                 ApplicationConfig.FolderName,
                 ApplicationConfig.DataDir);
 
-        public bool ExistTamplateFile => new FileInfo(_defaultPathToFolderUnloading).Exists;
+        private string _defaultPathToPdfTemplate = Path.Combine(
+            Path.GetPathRoot(Environment.CurrentDirectory),
+            ApplicationConfig.FolderName,
+            ApplicationConfig.SettingsFolder,
+            ApplicationConfig.PdfTamplate);
+       
+        public bool ExistTamplateFile => new FileInfo(_defaultPathToPdfTemplate).Exists;
 
         public IEnumerable<S21InfoPublisherField> GenerateInfoPublishers(object PublishersInfo)
         {
@@ -137,7 +143,7 @@ namespace MinistryReports.Services
             iTextSharp.text.Font font = new iTextSharp.text.Font(tnr, 12); // шрифт
 
             // Загрузили шаблон
-            using (FileStream fs = new FileStream(ApplicationConfig.PdfTamplate, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream fs = new FileStream(_defaultPathToPdfTemplate, FileMode.Open, FileAccess.ReadWrite))
             {
                 PdfReader pdfS21 = new PdfReader(fs);
 

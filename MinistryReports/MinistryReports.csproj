@@ -202,7 +202,6 @@
       <DependentUpon>PublisherWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controllers\ExcelDBController.cs" />
-    <Compile Include="Controllers\FastWorkInstrumentsWPF.cs" />
     <Compile Include="ExcelDbPublisher\ExcelPublisher.cs" />
     <Compile Include="Models\JWBook\MonthReport.cs" />
     <Compile Include="Models\JWBook\JWBookSettings.cs" />

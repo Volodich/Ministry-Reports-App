@@ -1,12 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using OfficeOpenXml;
 using MinistryReports.Models.S21;
-using MinistryReports.Models;
-using Org.BouncyCastle.Asn1.X509;
-using System.Threading;
-using System.Diagnostics;
 
 namespace MinistryReports.ExcelPublisher
 {
